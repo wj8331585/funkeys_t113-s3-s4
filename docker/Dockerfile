@@ -51,7 +51,6 @@ RUN \
 	rsync \
 	liblscp-dev \
 	subversion \
-        android-tools-mkbootimg \
 	# OPTIONAL java related packages
 	#javacc \
 	#jarwrapper \
@@ -63,8 +62,6 @@ RUN \
 	python3-distutils \
 	python3-setuptools \
 	#dblatex \
-        libssl-dev \
-        zip \
 	# OPTIONAL graph generation tools
 	#graphviz \
 	#python-matplotlib \
@@ -92,11 +89,13 @@ RUN \
 	# Add user
 	useradd -ms /bin/bash funkey && \
 	usermod -a -G sudo funkey && \
-	echo "funkey:funkey" | chpasswd 
+	echo "funkey:funkey" | chpasswd && \
 	#
 	# Clone the FunKey-OS repository
+	git clone https://github.com/FunKey-Project/FunKey-OS.git /home/funkey/FunKey-OS && \
 	#
 	# Set file ownership
+	chown -R funkey:funkey /home/funkey
 
 # Set user
 USER funkey
@@ -119,5 +118,5 @@ ENV \
 # 	"/home/funkey/FunKey-OS/FunKey/output/host", \
 # 	"/home/funkey/FunKey-OS/FunKey/output/build", \
 # 	"/home/funkey/FunKey-OS/FunKey/output/target"]
-CMD ["/usr/bin/make", "sdk", "all", "-C", "/home/funkey/FunKey-OS"]
 
+CMD ["/usr/bin/make", "sdk", "all", "-C", "/home/funkey/FunKey-OS"]
