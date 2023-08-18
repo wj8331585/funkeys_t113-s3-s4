@@ -1,0 +1,30 @@
+diff --git a/config.def.h b/config.def.h
+index a6f9cab..ef7da28 100644
+--- a/config.def.h
++++ b/config.def.h
+@@ -8,9 +8,9 @@
+ //static char font[] = "fonts/TerminusTTF-4.46.0.ttf:fonts/TerminusTTF-4.46.0.ttf";
+ static char font[] = "fonts/FIXED_V0.TTF:fonts/FIXED_V0.TTF";
+ static int fontsize = 8;
+-static int borderpx = 4;
+-static int initial_width = 240;
+-static int initial_height = 240;
++static int borderpx = 2;
++static int initial_width = 480;
++static int initial_height = 320;
+ static char shell[] = "/bin/sh";
+ 
+ /* double-click timeout (in milliseconds) between clicks for selection */
+diff --git a/st.c b/st.c
+index 93ef4ba..0e04b06 100644
+--- a/st.c
++++ b/st.c
+@@ -2329,7 +2329,7 @@ sdlinit(void) {
+     //xw.h = initial_height;
+ 
+ #ifdef FUNKEY_S
+-	if(!(screen = SDL_SetVideoMode(240, 240, 16, SDL_SWSURFACE | SDL_DOUBLEBUF))) {
++	if(!(screen = SDL_SetVideoMode(480, 320, 16, SDL_SWSURFACE | SDL_DOUBLEBUF))) {
+ #elif RS97_SCREEN_480
+ 	if(!(screen = SDL_SetVideoMode(320, 480, 16, SDL_SWSURFACE | SDL_DOUBLEBUF))) {
+ #else
