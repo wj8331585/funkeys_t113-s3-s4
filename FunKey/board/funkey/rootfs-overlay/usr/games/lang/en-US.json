@@ -1,0 +1,19 @@
+{
+    "Loaded core: %s": "已加载内核: %s",
+    "on": "开",
+    "off": "关",
+    "Press a key/button...": "请输入按键...",
+    "Select Core to Use": "选择要使用的内核",
+    "In-Game Menu": "游戏菜单",
+    "Global Settings": "全局设置",
+    "Core Settings": "内核设置",
+    "Input Settings": "输入设置",
+    "Language": "语言",
+    "Reset Game": "重置游戏",
+    "Exit": "退出",
+    "Fullscreen": "全屏",
+    "SRAM/RTC Save Interval": "SRAM/RTC保存间隔",
+    "Integer Scaling": "整数倍缩放",
+    "Linear Rendering": "线性抗锯齿渲染",
+    "Reset Core Settings": "重置默认内核设置"
+}

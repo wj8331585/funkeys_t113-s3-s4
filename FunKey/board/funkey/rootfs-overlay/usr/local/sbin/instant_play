@@ -1,0 +1,120 @@
+#!/bin/sh
+
+# Uncomment the following line to get debug info
+#set -x
+
+SELF="$(basename ${0})"
+INSTANT_PLAY_FILE="/mnt/instant_play"
+RESUME_PLAY_FILE="/mnt/resume_play"
+LAST_OPK_FILE="/mnt/last_opk"
+PID_PATH="/var/run/pid_path"
+REBOOTING_FILE="/run/rebooting"
+
+usage() {
+    >&2 echo "Usage: ${SELF} load"
+    >&2 echo "       ${SELF} save application args..."
+    exit 1
+}
+
+# Check number of arguments
+if [ ${#} -lt 1 ]; then
+    usage
+fi
+
+case ${1} in
+load)
+    if [ ${#} -ne 1 ]; then
+	usage
+    fi
+
+    # Umount any remaining OPK, if any
+    umount /opk >/dev/null 2>&1
+
+    # Mount last OPK, if any
+    if [ -r "${LAST_OPK_FILE}" ]; then
+	last_opk=$(cat "${LAST_OPK_FILE}")
+	mount -t squashfs "${last_opk}" /opk
+    fi
+
+    # Remove unnecessary files
+    rm -f "${RESUME_PLAY_FILE}"
+
+    # Launch Previous Game if any
+    if [ -f "${INSTANT_PLAY_FILE}" ]; then
+	keymap resume
+	echo -n "Found Instant Play file, restarting previous game with command: "
+	cat "${INSTANT_PLAY_FILE}"
+	mv "${INSTANT_PLAY_FILE}" "${RESUME_PLAY_FILE}"
+	source "${RESUME_PLAY_FILE}"
+	rm -f "${RESUME_PLAY_FILE}"
+	keymap default
+	termfix_all
+    fi
+
+    # Unmount last OPK, if any
+    if [ -r "${LAST_OPK_FILE}" -a ! -f "${REBOOTING_FILE}" ]; then
+	umount /opk
+	rm "${LAST_OPK_FILE}"
+    fi
+    ;;
+
+save)
+    if [ ${#} -lt 2 ]; then
+	usage
+    fi
+    shift
+
+	# Get curent binary real path
+	bin=$(printf %s "$1" | sed "s/'/'\\\\''/g")
+    bin_name=$(basename "$bin")
+    bin_path="$(cat $PID_PATH)"/"$bin_name"
+
+	# Write quick load file args
+	echo -n "" > "${INSTANT_PLAY_FILE}"
+	printf "'" >> "${INSTANT_PLAY_FILE}"
+	echo -n "$bin_path" >> "${INSTANT_PLAY_FILE}"
+    printf "' " >> "${INSTANT_PLAY_FILE}"
+    shift
+
+    while [ "$#" != "0" ]
+    do
+        printf "'" >> "${INSTANT_PLAY_FILE}"
+        printf %s "$1" | sed "s/'/'\\\\''/g" >> "${INSTANT_PLAY_FILE}"
+        printf "' " >> "${INSTANT_PLAY_FILE}"
+        shift
+    done
+
+    # Add the magic sauce to launch the process in background,
+    # record the PID into a file, wait for the process to
+    # terminate and erase the recorded PID
+    # Do not use /etc/asound.conf for gpSP as it does not like
+    # mono downmix (sound was saturated)
+    if grep -q "gpsp" /mnt/instant_play; then
+    cat << EOF >> "${INSTANT_PLAY_FILE}"
+&
+rw
+mv -f /etc/asound.conf /etc/asound.conf.BAK
+pid record \$!
+wait \$!
+pid erase
+mv -f /etc/asound.conf.BAK /etc/asound.conf
+ro
+EOF
+    else
+    cat << EOF >> "${INSTANT_PLAY_FILE}"
+&
+pid record \$!
+wait \$!
+pid erase
+EOF
+    fi
+
+    # Now terminate gracefully
+    exec powerdown now
+    ;;
+
+*)
+    usage
+    ;;
+esac
+exit 0

@@ -1,0 +1,15 @@
+Game Boy
+Game Boy Color
+Game Boy Advance
+NES
+SNES
+Game Gear
+Sega Master System
+Sega Genesis
+PCE-TurboGrafx
+Atari lynx
+Neo Geo Pocket
+WonderSwan
+PS1
+Libretro
+Native games

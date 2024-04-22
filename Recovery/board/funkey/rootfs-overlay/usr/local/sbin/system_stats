@@ -1,0 +1,62 @@
+#!/bin/sh
+
+# Uncomment the following line to get debug info
+#set -x
+
+SELF="$(basename ${0})"
+UPDATE_PERIOD=2 #seconds
+
+usage() {
+    >2& echo "Usage: ${SELF} [toggle]"
+    exit 1
+}
+
+# Check number of arguments
+if [ ${#} -eq 1 -a "${1}" = "toggle" ]; then
+    notif set 0 " Getting system stats..."
+    killall -s USR1 "${SELF}"
+    exit 0
+elif [ ${#} -ne 0 ]; then
+    usage
+fi
+
+notif_dirty=0
+perform=0
+
+# USR1 callback
+function toggle_perform()
+{
+    let perform=1-${perform}
+    if [ ${perform} -eq 0 ]; then
+    	notif clear
+        notif_dirty=1
+    fi
+}
+trap toggle_perform SIGUSR1
+
+while true; do
+    if [ ${perform} -eq 1 ]; then
+
+	# Compute stats
+	cpu=$(printf "%.0f\n" $(mpstat -P ALL $UPDATE_PERIOD 1 | tail -1 | awk '{print 100-$12}'))
+	ram_mem=$(printf "%.0f\n" $(free | grep Mem | awk '{print $3/$2 * 100.0}'))
+	ram_swap=$(printf "%.0f\n" $(free | grep Swap | awk '{print $3/$2 * 100.0}'))
+	battery=$(printf "%.0f\n" $(cat /sys/class/power_supply/axp20x-battery/capacity))
+	ip_addr=$(ifconfig usb0 | grep "inet " | awk -F'[: ]+' '{ print $4 }')
+
+	# Notif
+	if [ ${notif_dirty} -eq 1 ]; then
+	    notif clear
+	    notif_dirty=0
+	else
+	    if [ "x${ip_addr}" != "x" ]; then
+		notif set 0 "CPU:${cpu} RAM:${ram_mem} SWAP:${ram_swap} BAT:${battery}^IP:${ip_addr}"
+	    else
+		notif set 0 "CPU:${cpu} RAM:${ram_mem} SWAP:${ram_swap} BAT:${battery}"
+	    fi
+	fi
+    else
+	sleep ${UPDATE_PERIOD}
+    fi
+done
+exit 0

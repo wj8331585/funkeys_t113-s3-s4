@@ -1,0 +1,243 @@
+#!/bin/sh
+
+# Uncomment the following line to get debug info
+# set -x
+
+# This is to avoid expanding '*' in fdisk results
+set -f
+
+source /usr/local/lib/utils
+
+SELF=$(basename $0)
+
+# Find out the root partition number from the kernel command line
+root_part=$(cat /proc/cmdline | sed -n 's|^.*root=\([^ ]*\).*|\1|p')
+root_part_num=${root_part#/dev/mmcblk0p}
+if [ "${root_part_num}" -eq 1 ]; then
+    die_notif 0 "recovery mode"
+elif [ "${root_part_num}" = "{$root_part}" ]; then
+    die_notif 1 "${root_part} is not an SD card partition, aborting"
+elif [ "${root_part_num}" -ne 5 ]; then
+    die_notif 2 "unknown partition layout, aborting"
+fi
+let swap_part_num=${root_part_num}+1
+swap_part=/dev/mmcblk0p${swap_part_num}
+let usb_part_num=${swap_part_num}+1
+usb_part=/dev/mmcblk0p${usb_part_num}
+
+check_root_id () {
+    [ $(id -u) -ne 0 ] && die_notif 3 "this script must be run as root, aborting"
+    return 0
+}
+
+resize_rootfs_partition () {
+
+    # Check if root partition is already resized
+    local rootfs_part_line=$(fdisk -l /dev/mmcblk0 2>/dev/null | grep ${root_part})
+    set ${rootfs_part_line}
+    local rootfs_part_size=${5}
+    if [ "${rootfs_part_size}" = "1G" ]; then
+	info "root partition is already resized"
+	return 0
+    fi
+
+    # Check that the last partition is the rootfs partition
+    local last_part_line=$(fdisk -l /dev/mmcblk0 2>/dev/null | tail -n 1)
+    set ${last_part_line}
+    local last_part_num=${1#/dev/mmcblk0p}
+    local part_start=${2}
+    if [ "${last_part_num}" != "${root_part_num}" ]; then
+	die_notif 4 "rootfs is not the last partition. Don't know how to expand, aborting"
+    fi
+
+    # Remove (temporarily) the rootfs partition
+    # Re-create the rootfs partition with a 1GB size
+    fdisk /dev/mmcblk0 >/dev/null 2>&1 <<EOF
+d
+${root_part_num}
+n
+${root_part_num}
+${part_start}
++1G
+N
+w
+EOF
+
+    # Mark the rootfs partition as bootable
+    sfdisk -A /dev/mmcblk0 ${root_part_num} >/dev/null 2>&1 || die_notif 7 "cannot make the rootfs partition bootable, aborting"
+
+    # Reload the partition table
+    partprobe /dev/mmcblk0 >/dev/null 2>&1 || die_notif 8 "cannot reload the partition table, aborting"
+
+    return 0
+}
+
+resize_rootfs_filesystem () {
+    local rootfs_line=$(df | grep /dev/root)
+    set ${rootfs_line}
+    local rootfs_size=${2}
+    if [ ${rootfs_size} -gt 1000000 ]; then
+	info "rootfs already resized"
+	return 0
+    fi
+    rw
+    resize2fs ${root_part} >/dev/null 2>&1 || die_notif 9 "cannot resize the root filesystem, aborting"
+    ro
+    return 0
+}
+
+create_swap () {
+
+    # Check if swap partition already exists
+    fdisk -l /dev/mmcblk0 2>/dev/null | grep "Linux swap" >/dev/null 2>&1
+    if [ $? -eq 0 ]; then
+	info "swap partition already exists"
+    else
+	mount | grep -q ${usb_part}
+	if [ $? -ne 0 ]; then
+
+	    # Check that the last partition is the rootfs partition
+	    local last_part_line=$(fdisk -l /dev/mmcblk0 2>/dev/null | tail -n 1)
+	    set ${last_part_line}
+	    local last_part_num=${1#/dev/mmcblk0p}
+	    if [ "$last_part_num" != "$root_part_num" ]; then
+		die_notif 10 "rootfs is not the last partition. Don't know how to create the backing store partition"
+	    fi
+
+	    # Create an additional linux swap partition
+	    let swap_part_num=${last_part_num}+1
+	    swap_part=/dev/mmcblk0p${swap_part_num}
+	    fdisk /dev/mmcblk0 >/dev/null 2>&1 <<EOF
+n
+${swap_part_num}
+
++128M
+t
+${swap_part_num}
+19
+w
+EOF
+	fi
+    fi
+
+    # Check if swap is enabled
+    local swap_line=$(free | grep Swap)
+    set ${swap_line}
+    local swap_size=${2}
+    if [ ${swap_size} -eq 0 ]; then
+	mkswap ${swap_part} >/dev/null 2>&1
+	if [ $? -ne 0 ]; then
+	    die_notif 11 "cannot create swap file, aborting"
+	fi
+
+	# Enable swap
+	swapon -a >/dev/null 2>&1 || die_notif 12 "cannot enable swap file, aborting"
+    fi
+    return 0
+}
+
+create_usb_partition () {
+
+    # Check if the USB partition already exists
+    fdisk -l /dev/mmcblk0 2>/dev/null | grep "W95 FAT32" >/dev/null 2>&1
+    if [ $? -eq 0 ]; then
+	info "USB partition already exists"
+	return 0
+    fi
+    
+    mount | grep -q ${usb_part}
+    if [ $? -ne 0 ]; then
+
+	# Check that the last partition is the swap partition
+	local last_part_line=$(fdisk -l /dev/mmcblk0 2>/dev/null | tail -n 1)
+	set ${last_part_line}
+	local last_part_num=${1#/dev/mmcblk0p}
+	if [ "${last_part_num}" != "${swap_part_num}" ]; then
+	    die_notif 13 "rootfs is not the last partition. Don't know how to create the backing store partition"
+	fi
+
+	# Create an additional FAT32 USB partition that fills the disk
+	let usb_part_num=${last_part_num}+1
+	usb_part=/dev/mmcblk0p${usb_part_num}
+	fdisk /dev/mmcblk0 >/dev/null 2>&1 <<EOF
+n
+${usb_part_num}
+
+
+t
+${usb_part_num}
+16
+w
+EOF
+	sync
+    fi
+
+    # Reload the partition table
+    partprobe /dev/mmcblk0 >/dev/null 2>&1 || die_notif 14 "cannot reload the partition table, aborting"
+
+    return 0
+}
+
+format_usb_partition () {
+
+    # Check if the USB partition is already mounted
+    mount | grep /mnt > /dev/null 2>&1
+    if [ $? -eq 0 ]; then
+	info "USB partition already mounted"
+	return 0
+    fi
+
+    # Format the backing store as FAT32
+    mkfs.vfat ${usb_part} >/dev/null 2>&1 || die_notif 15 "cannot format the backing store partition"
+    return 0
+}
+
+copy_files_to_usb_partition () {
+
+    # Check if the USB partition is already mounted
+    mount | grep /mnt > /dev/null 2>&1
+    if [ $? -ne 0 ]; then
+	mount /mnt/ || die_notif 16 "Cannot mount /mnt"
+    fi
+
+    # Copy freware games and other necessary mnt files
+    unzip -q -o /usr/local/share/mnt_files.zip -d /mnt/
+    #tar xf /usr/local/share/mnt_files.tar.gz -C /mnt/
+
+    # Copy OPKs
+    set +f
+    cp -r /usr/local/share/OPKs/* /mnt
+    set -f
+
+    # Unmount USB partition
+    umount /mnt/ || die_notif 17 "Cannot unmount /mnt"
+    return 0
+}
+
+check_root_id
+showmsg " FIRST BOOT DETECTED"
+
+showmsg " 1/6 RESIZE ROOT PARTITION"
+resize_rootfs_partition
+
+showmsg " 2/6 RESIZE ROOT FILESYSTEM"
+resize_rootfs_filesystem
+
+showmsg " 3/6 CREATE SWAP"
+create_swap
+
+showmsg " 4/6 CREATE USB PARTITION"
+create_usb_partition
+
+showmsg " 5/6 FORMAT USB PARTITION"
+format_usb_partition
+
+showmsg " 6/6 COPY FILES TO USB PARTITION"
+copy_files_to_usb_partition
+
+showmsg " FIRST BOOT SETUP FINISHED!"
+
+fw_setenv first_boot_ok 1
+
+sleep 1
+notif clear

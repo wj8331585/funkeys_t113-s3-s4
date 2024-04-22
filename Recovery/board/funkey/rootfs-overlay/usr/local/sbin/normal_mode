@@ -1,0 +1,4 @@
+#!/bin/sh
+sfdisk -A /dev/mmcblk0 2 >/dev/null 2>&1
+echo "Next boot will be in normal mode"
+reboot

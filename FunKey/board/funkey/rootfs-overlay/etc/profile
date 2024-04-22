@@ -1,0 +1,34 @@
+export PATH="/usr/local/games:/usr/games:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
+
+if [ "$PS1" ]; then
+	if [ "`id -u`" -eq 0 ]; then
+		export PS1='\[\033[01;32m\]\u@\h\[\033[00m\]:\[\033[01;34m\]\w\[\033[00m\]\# '
+	else
+		export PS1='\[\033[01;32m\]\u@\h\[\033[00m\]:\[\033[01;34m\]\w\[\033[00m\]\$ '
+	fi
+fi
+
+export PAGER='/bin/more'
+export EDITOR='/usr/bin/nano'
+export SDL_NOMOUSE=1
+
+# Source configuration files from /etc/profile.d
+for i in /etc/profile.d/*.sh ; do
+	if [ -r "$i" ]; then
+		. $i
+	fi
+done
+insmod /usr/local/sbin/mypoweroff.ko
+#set defualt machine date
+date -s 2024-03-16
+ulimit -c unlimited
+#grep debugfs /proc/filesystems && mount -t debugfs none /sys/kernel/debug
+alias usbhost="cat /sys/devices/platform/soc@3000000/soc@3000000:usbc0@0/usb_host"
+alias usbdevice="cat /sys/devices/platform/soc@3000000/soc@3000000:usbc0@0/usb_device"
+[ -x /bin/more ] || alias more=less
+[ -x /usr/bin/vim ] && alias vi=vim || alias vim=vi
+[ -x /usr/bin/arp ] || arp() { cat /proc/net/arp; }
+[ -x /usr/bin/ldd ] || ldd() { LD_TRACE_LOADED_OBJECTS=1 $*; }
+
+unset i
+
