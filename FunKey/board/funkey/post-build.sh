@@ -32,4 +32,5 @@ mv ${TARGET_DIR}/etc/init.d/S50dropbear ${TARGET_DIR}/etc/init.d/S42dropbear
 cp $BOARD_COMMON_DIR/bin/ramdisk.img -rfvd  $BINARIES_DIR
 cd $BINARIES_DIR
 mkbootimg --kernel zImage  --ramdisk  ramdisk.img --board sun8iw20p1 --base  0x40200000 --kernel_offset  0x0 --ramdisk_offset  0x01000000 -o  boot.img
+mkdir -p ../target/boot
 cp -f boot.img ../target/boot
