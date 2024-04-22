@@ -1,0 +1,30 @@
+--- a/configure
++++ b/configure
+@@ -13701,7 +13701,7 @@
+ if test "${enable_music_ogg_tremor+set}" = set; then
+   enableval=$enable_music_ogg_tremor;
+ else
+-  enable_music_ogg_tremor=no
++  enableval=$enable_music_ogg_tremor;
+ fi
+ 
+ # Check whether --enable-music-ogg-shared was given.
+@@ -13939,10 +13939,14 @@
+                 EXTRA_LDFLAGS="$EXTRA_LDFLAGS -lvorbisidec -lvorbis"
+             fi
+         else
+-            { $as_echo "$as_me:$LINENO: WARNING: *** Unable to find Ogg Vorbis Tremor library (http://www.xiph.org/)" >&5
+-$as_echo "$as_me: WARNING: *** Unable to find Ogg Vorbis Tremor library (http://www.xiph.org/)" >&2;}
+-            { $as_echo "$as_me:$LINENO: WARNING: Ogg Vorbis support disabled" >&5
+-$as_echo "$as_me: WARNING: Ogg Vorbis support disabled" >&2;}
++            SOURCES="$SOURCES $srcdir/*_ogg.c"
++            EXTRA_CFLAGS="$EXTRA_CFLAGS -DOGG_MUSIC -DOGG_USE_TREMOR"
++            if test x$enable_music_ogg_shared = xyes && test x$ogg_lib != x; then
++                echo "-- dynamic libvorbisidec -> $ogg_lib"
++                EXTRA_CFLAGS="$EXTRA_CFLAGS -DOGG_DYNAMIC=\\\"$ogg_lib\\\""
++            else
++                EXTRA_LDFLAGS="$EXTRA_LDFLAGS -lvorbisidec"
++            fi
+         fi
+     else
+         if test "${ac_cv_header_vorbis_vorbisfile_h+set}" = set; then

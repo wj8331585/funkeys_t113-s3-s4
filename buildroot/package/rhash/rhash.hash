@@ -1,0 +1,5 @@
+# From https://sourceforge.net/projects/rhash/files/rhash/1.4.0/
+sha1  3db1e87a31c77ca2fa5507db7932ef92e9eb5148  rhash-1.4.0-src.tar.gz
+# Locally calculated
+sha256  2ea39540f5c580da0e655f7b483c19e0d31506aed4202d88e8459fa7aeeb8861  rhash-1.4.0-src.tar.gz
+sha256  953e55838353335148c90b5a38a4894292680b1d4c37228ffddddbf18ce54bf5  COPYING

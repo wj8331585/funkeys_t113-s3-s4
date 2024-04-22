@@ -1,0 +1,58 @@
+--- a/configure.in
++++ a/configure.in
+@@ -449,7 +449,7 @@
+                 echo "-- dynamic libvorbisidec -> $ogg_lib"
+                 EXTRA_CFLAGS="$EXTRA_CFLAGS -DOGG_DYNAMIC=\\\"$ogg_lib\\\""
+             else
+-                EXTRA_LDFLAGS="$EXTRA_LDFLAGS -lvorbisidec -lvorbis"
++                EXTRA_LDFLAGS="$EXTRA_LDFLAGS -lvorbisidec "
+             fi
+         else
+             AC_MSG_WARN([*** Unable to find Ogg Vorbis Tremor library (http://www.xiph.org/)])
+@@ -457,7 +457,7 @@
+         fi
+     else
+         AC_CHECK_HEADER([vorbis/vorbisfile.h], [have_ogg_hdr=yes])
+-        AC_CHECK_LIB([vorbisfile], [ov_open_callbacks], [have_ogg_lib=yes], [], [-lvorbis -logg -lm])
++        AC_CHECK_LIB([vorbisfile], [ov_open_callbacks], [have_ogg_lib=yes], [], [ -logg -lm])
+         if test x$have_ogg_hdr = xyes -a x$have_ogg_lib = xyes; then
+             case "$host" in
+                 *-*-darwin*)
+@@ -479,7 +479,7 @@
+                 echo "-- dynamic libvorbisfile -> $ogg_lib"
+                 EXTRA_CFLAGS="$EXTRA_CFLAGS -DOGG_DYNAMIC=\\\"$ogg_lib\\\""
+             else
+-                EXTRA_LDFLAGS="$EXTRA_LDFLAGS -lvorbisfile -lvorbis -logg -lm"
++                EXTRA_LDFLAGS="$EXTRA_LDFLAGS -lvorbisfile  -logg -lm"
+             fi
+         else
+             AC_MSG_WARN([*** Unable to find Ogg Vorbis library (http://www.xiph.org/)])
+--- a/configure
++++ a/configure
+@@ -13936,7 +13936,7 @@
+                 echo "-- dynamic libvorbisidec -> $ogg_lib"
+                 EXTRA_CFLAGS="$EXTRA_CFLAGS -DOGG_DYNAMIC=\\\"$ogg_lib\\\""
+             else
+-                EXTRA_LDFLAGS="$EXTRA_LDFLAGS -lvorbisidec -lvorbis"
++                EXTRA_LDFLAGS="$EXTRA_LDFLAGS -lvorbisidec "
+             fi
+         else
+             { $as_echo "$as_me:$LINENO: WARNING: *** Unable to find Ogg Vorbis Tremor library (http://www.xiph.org/)" >&5
+@@ -14083,7 +14083,7 @@
+   $as_echo_n "(cached) " >&6
+ else
+   ac_check_lib_save_LIBS=$LIBS
+-LIBS="-lvorbisfile -lvorbis -logg -lm $LIBS"
++LIBS="-lvorbisfile  -logg -lm $LIBS"
+ cat >conftest.$ac_ext <<_ACEOF
+ /* confdefs.h.  */
+ _ACEOF
+@@ -14167,7 +14167,7 @@
+                 echo "-- dynamic libvorbisfile -> $ogg_lib"
+                 EXTRA_CFLAGS="$EXTRA_CFLAGS -DOGG_DYNAMIC=\\\"$ogg_lib\\\""
+             else
+-                EXTRA_LDFLAGS="$EXTRA_LDFLAGS -lvorbisfile -lvorbis -logg -lm"
++                EXTRA_LDFLAGS="$EXTRA_LDFLAGS -lvorbisfile  -logg -lm"
+             fi
+         else
+             { $as_echo "$as_me:$LINENO: WARNING: *** Unable to find Ogg Vorbis library (http://www.xiph.org/)" >&5

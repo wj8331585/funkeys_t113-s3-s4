@@ -1,0 +1,10 @@
+#!/bin/sh
+
+cd /opt/picoarch
+./package
+cp picoarch /opt/FunKey-OS/FunKey/board/funkey/rootfs-overlay/usr/games/
+
+cd ../FunKey-OS
+make
+
+rm -f FunKey/board/funkey/rootfs-overlay/usr/games/picoarch

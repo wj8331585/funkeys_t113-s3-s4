@@ -1,0 +1,19 @@
+--- a/configure.in
++++ b/configure.in
+@@ -452,8 +452,14 @@
+                 EXTRA_LDFLAGS="$EXTRA_LDFLAGS -lvorbisidec -lvorbis"
+             fi
+         else
+-            AC_MSG_WARN([*** Unable to find Ogg Vorbis Tremor library (http://www.xiph.org/)])
+-            AC_MSG_WARN([Ogg Vorbis support disabled])
++            SOURCES="$SOURCES $srcdir/*_ogg.c"
++            EXTRA_CFLAGS="$EXTRA_CFLAGS -DOGG_MUSIC -DOGG_USE_TREMOR"
++            if test x$enable_music_ogg_shared = xyes && test x$ogg_lib != x; then
++                echo "-- dynamic libvorbisidec -> $ogg_lib"
++                EXTRA_CFLAGS="$EXTRA_CFLAGS -DOGG_DYNAMIC=\\\"$ogg_lib\\\""
++            else
++                EXTRA_LDFLAGS="$EXTRA_LDFLAGS -lvorbisidec"
++            fi
+         fi
+     else
+         AC_CHECK_HEADER([vorbis/vorbisfile.h], [have_ogg_hdr=yes])

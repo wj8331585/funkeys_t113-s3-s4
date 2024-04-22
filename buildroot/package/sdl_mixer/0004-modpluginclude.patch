@@ -1,0 +1,12 @@
+diff -ru SDL_mixer-1.2.13.org/configure.in SDL_mixer-1.2.13/configure.in
+--- SDL_mixer-1.2.13.org/configure.in	2012-01-15 23:01:05.000000000 +0100
++++ SDL_mixer-1.2.13/configure.in	2014-07-03 05:25:44.761854572 +0200
+@@ -301,7 +301,7 @@
+         have_libmikmod=yes
+         AC_MSG_CHECKING([for libmikmod - version >= $libmikmod_ver])
+         AC_TRY_RUN([
+-#include "mikmod.h"
++#include "libmodplug/mikmod.h"
+ #include "stdio.h"
+ 
+ int main(int argc, char **argv)
