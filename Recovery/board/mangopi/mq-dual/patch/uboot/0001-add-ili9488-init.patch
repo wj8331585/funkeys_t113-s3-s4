@@ -1,0 +1,257 @@
+From 49911778ae89d48201a78ea045ae9a70a2df965c Mon Sep 17 00:00:00 2001
+From: wj <545818496@qq.com>
+Date: Tue, 23 Apr 2024 16:13:30 +0800
+Subject: [PATCH] update
+
+---
+ .../sunxi/disp2/disp/lcd/default_panel.c      | 223 ++++++++++++++++++
+ 1 file changed, 223 insertions(+)
+
+diff --git a/drivers/video/sunxi/disp2/disp/lcd/default_panel.c b/drivers/video/sunxi/disp2/disp/lcd/default_panel.c
+index f1f32d1..2524164 100755
+--- a/drivers/video/sunxi/disp2/disp/lcd/default_panel.c
++++ b/drivers/video/sunxi/disp2/disp/lcd/default_panel.c
+@@ -23,6 +23,7 @@ static void LCD_bl_close(u32 sel);
+ 
+ static void LCD_panel_init(u32 sel);
+ static void LCD_panel_exit(u32 sel);
++static void ili9488_init(void);
+ 
+ static void LCD_cfg_panel_info(panel_extend_para * info)
+ {
+@@ -127,6 +128,7 @@ static void LCD_bl_close(u32 sel)
+ 
+ static void LCD_panel_init(u32 sel)
+ {
++	ili9488_init();
+ 	return;
+ }
+ 
+@@ -151,3 +153,224 @@ __lcd_panel_t default_panel = {
+ 		.lcd_user_defined_func = LCD_user_defined_func,
+ 	},
+ };
++
++#include <asm/arch/gpio.h>
++
++static int sunxi_gpio_output2(u32 pin, u32 val)
++{
++	u32 dat;
++	u32 bank = GPIO_BANK(pin);
++	u32 num = GPIO_NUM(pin);
++	struct sunxi_gpio *pio = BANK_TO_GPIO(bank);
++
++	dat = readl(&pio->dat);
++	if (val)
++		dat |= 0x1 << num;
++	else
++		dat &= ~(0x1 << num);
++
++	writel(dat, &pio->dat);
++
++	return 0;
++}
++
++#define	LCD_CS_SET  	{sunxi_gpio_output2(SUNXI_GPE(11),1);}    	//片选端口1	
++#define	LCD_SDA_SET		{sunxi_gpio_output2(SUNXI_GPE(10),1);}    	//写数据1    	   
++#define	LCD_SCLK_SET	{sunxi_gpio_output2(SUNXI_GPE(8),1);}     	//写脉冲1
++								    
++#define	LCD_CS_CLR  	{sunxi_gpio_output2(SUNXI_GPE(11),0);}     	//片选端口0
++#define	LCD_SDA_CLR		{sunxi_gpio_output2(SUNXI_GPE(10),0);}     	//写数据0     	   
++#define	LCD_SCLK_CLR	{sunxi_gpio_output2(SUNXI_GPE(8),0);}     	//写脉冲0
++
++static void write_cmd(uint8_t cmd)
++{
++	uint8_t i = 0;
++	uint16_t command = 0;
++
++	LCD_CS_CLR;
++	udelay(30);
++	command |= cmd;
++
++	for(i=0;i<9;i++)
++	{
++		LCD_SCLK_CLR;
++		if(command&0x0100)
++		{	
++			LCD_SDA_SET;
++		}
++		else
++		{	
++			LCD_SDA_CLR;
++		}
++		udelay(30);
++		LCD_SCLK_SET;
++		udelay(30);
++		command <<= 1;
++	}
++	LCD_CS_SET;
++	udelay(30);
++}
++
++static void write_dat(uint8_t data)
++{
++	uint8_t i = 0;
++	uint16_t my_data = 0x0100;
++
++	LCD_CS_CLR;
++	udelay(30);
++	my_data |= data;
++
++	for(i=0;i<9;i++)
++	{
++		LCD_SCLK_CLR;
++		if(my_data&0x0100)
++		{	
++			LCD_SDA_SET;
++		}
++		else
++		{	
++			LCD_SDA_CLR;
++		}
++		udelay(30);
++		LCD_SCLK_SET;
++		udelay(30);
++		my_data <<= 1;
++	}
++	LCD_CS_SET;
++	udelay(30);
++}
++
++static void ili9488_init(void)
++{
++#define LCD_XSIZE 	480
++#define LCD_YSIZE 	320
++	sunxi_gpio_set_cfgpin(SUNXI_GPE(11), SUNXI_GPIO_OUTPUT);	//cs	pe11
++	sunxi_gpio_set_cfgpin(SUNXI_GPE(10), SUNXI_GPIO_OUTPUT);	//sda	pe10
++	sunxi_gpio_set_cfgpin(SUNXI_GPE(8), SUNXI_GPIO_OUTPUT);		//sclk	pe8
++	sunxi_gpio_set_cfgpin(SUNXI_GPD(22), SUNXI_GPIO_OUTPUT);	//blk	pd22
++
++	sunxi_gpio_set_pull(SUNXI_GPE(11), SUNXI_GPIO_PULL_UP);
++	sunxi_gpio_set_pull(SUNXI_GPE(10), SUNXI_GPIO_PULL_UP);
++	sunxi_gpio_set_pull(SUNXI_GPE(8), SUNXI_GPIO_PULL_UP);
++	sunxi_gpio_set_pull(SUNXI_GPD(22), SUNXI_GPIO_PULL_UP);
++
++	sunxi_gpio_set_drv(SUNXI_GPE(11), 3);	
++	sunxi_gpio_set_drv(SUNXI_GPE(10), 3);
++	sunxi_gpio_set_drv(SUNXI_GPE(8), 3);
++	sunxi_gpio_set_drv(SUNXI_GPD(22), 3);
++
++	sunxi_gpio_set_cfgpin(SUNXI_GPB(7), SUNXI_GPIO_OUTPUT);
++	//sunxi_gpio_set_pull(SUNXI_GPB(7), SUNXI_GPIO_PULL_UP);
++	//sunxi_gpio_set_drv(SUNXI_GPB(7), 3);
++	sunxi_gpio_output2(SUNXI_GPB(7),1);
++
++	printk("ili9488 3line spi init...\n");
++#if 0
++	// VCI=2.8V 
++	//************* Reset LCD Driver ****************// 
++	LCD_nRESET = 1; 
++	Delayms(1); // Delay 1ms 
++	LCD_nRESET = 0; 
++	Delayms(10); // Delay 10ms // This delay time is necessary 
++	LCD_nRESET = 1; 
++	Delayms(120); // Delay 120 ms 
++#endif	
++	//************* Start Initial Sequence **********// 
++	
++	write_cmd(0xE0);      //P-Gamma 
++	write_dat(0x00); 
++	write_dat(0x10); 
++	write_dat(0x14); 
++	write_dat(0x01); 
++	write_dat(0x0E); 
++	write_dat(0x04); 
++	write_dat(0x33); 
++	write_dat(0x56); 
++	write_dat(0x48); 
++	write_dat(0x03); 
++	write_dat(0x0C); 
++	write_dat(0x0B); 
++	write_dat(0x2B); 
++	write_dat(0x34); 
++	write_dat(0x0F); 
++	
++	write_cmd(0XE1);      //N-Gamma 
++	write_dat(0x00); 
++	write_dat(0x12); 
++	write_dat(0x18); 
++	write_dat(0x05); 
++	write_dat(0x12); 
++	write_dat(0x06); 
++	write_dat(0x40); 
++	write_dat(0x34); 
++	write_dat(0x57); 
++	write_dat(0x06); 
++	write_dat(0x10); 
++	write_dat(0x0C); 
++	write_dat(0x3B); 
++	write_dat(0x3F); 
++	write_dat(0x0F); 
++	
++	write_cmd(0XC0);    //Power Control 1 
++	write_dat(0x0F);    //Vreg1out 
++	write_dat(0x0C);    //Verg2out 
++	
++	write_cmd(0xC1);    //Power Control 2 
++	write_dat(0x41);    //VGH,VGL 
++	
++	write_cmd(0xC5);    //Power Control 3 
++	write_dat(0x00); 
++	write_dat(0x25);    //Vcom 
++	write_dat(0x80);
++
++	write_cmd(0X2A); 
++	write_dat(0x00);
++	write_dat(0x00);
++	write_dat(0x01);
++	write_dat(0xDF);	//479
++
++	write_cmd(0X2B); 
++	write_dat(0x00);
++	write_dat(0x00);
++	write_dat(0x01);
++	write_dat(0x3F);	//319
++
++	
++	write_cmd(0x36);      //Memory Access
++	write_dat(0xE8); 	  //0x28
++	
++	write_cmd(0x3A);      // Interface Pixel Format 
++	write_dat(0x66);    //18bit 
++	
++	write_cmd(0XB0);      // Interface Mode Control 
++	write_dat(0x00);     
++	
++	write_cmd(0xB1);      //Frame rate 
++	write_dat(0xA0);    //60Hz 
++	
++	write_cmd(0xB4);      //Display Inversion Control 
++	write_dat(0x02);    //2-dot 
++	
++	write_cmd(0XB6);      //RGB/MCU Interface Control 
++	write_dat(0x22);    //MCU:02; RGB:32/22 
++	write_dat(0x02);    //Source,Gate scan dieection 
++	
++	
++	write_cmd(0XE9);      // Set Image Function   
++	write_dat(0x00);    //disable 24 bit data input 
++	
++	write_cmd(0xF7);     //   A d j u s t   C o n t r o l 
++	write_dat(0xA9);     
++	write_dat(0x51);     
++	write_dat(0x2C);     
++	write_dat(0x82);   //   D 7   s t r e a m ,   l o o s e  
++	
++	write_cmd(0x21);      //Normal Black 
++	
++	write_cmd(0x11);     //Sleep out 
++	mdelay(120); 
++	write_cmd(0x29);    //Display on 
++
++
++	printk("ili9488 init ok\n");
++}
+-- 
+2.25.1
+
