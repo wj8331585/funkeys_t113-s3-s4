@@ -1,0 +1,41 @@
+From 347188dc034c5c081f0ee2cd159dcdc059a2b2fc Mon Sep 17 00:00:00 2001
+From: wj <545818496@qq.com>
+Date: Wed, 24 Apr 2024 11:34:45 +0800
+Subject: [PATCH] update
+
+---
+ src/funkeymenu.cpp | 4 ++--
+ src/gmenu2x.cpp    | 2 +-
+ 2 files changed, 3 insertions(+), 3 deletions(-)
+
+diff --git a/src/funkeymenu.cpp b/src/funkeymenu.cpp
+index 52b1b1b..1625ff9 100644
+--- a/src/funkeymenu.cpp
++++ b/src/funkeymenu.cpp
+@@ -20,8 +20,8 @@
+ #define MENU_ERROR_PRINTF(...)
+ #endif //MENU_ERROR
+ 
+-#define SCREEN_HORIZONTAL_SIZE      240 //RES_HW_SCREEN_HORIZONTAL
+-#define SCREEN_VERTICAL_SIZE        240 //RES_HW_SCREEN_VERTICAL
++#define SCREEN_HORIZONTAL_SIZE      480 //RES_HW_SCREEN_HORIZONTAL
++#define SCREEN_VERTICAL_SIZE        320 //RES_HW_SCREEN_VERTICAL
+ 
+ #define SCROLL_SPEED_PX             30
+ #define FPS_MENU                    60
+diff --git a/src/gmenu2x.cpp b/src/gmenu2x.cpp
+index c9db660..ecec0f3 100644
+--- a/src/gmenu2x.cpp
++++ b/src/gmenu2x.cpp
+@@ -98,7 +98,7 @@ static const std::pair<unsigned int, unsigned int> supported_resolutions[] = {
+ 	{ 1280, 720 },
+ 	{ 800, 480 },
+ 	{ 640, 480 },
+-	{ 320, 240 },
++	{ 480, 320 },
+ 	{ 240, 160 },
+ };
+ 
+-- 
+2.25.1
+

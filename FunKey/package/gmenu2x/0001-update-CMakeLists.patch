@@ -1,0 +1,39 @@
+From 6d88f98711f440256427b6a86eaab51b2d2f6304 Mon Sep 17 00:00:00 2001
+From: wj <545818496@qq.com>
+Date: Wed, 24 Apr 2024 13:41:31 +0800
+Subject: [PATCH] update-CMakeLists
+
+---
+ .gitignore     | 2 ++
+ CMakeLists.txt | 4 ++++
+ 2 files changed, 6 insertions(+)
+
+diff --git a/.gitignore b/.gitignore
+index 325b58c..2a50724 100644
+--- a/.gitignore
++++ b/.gitignore
+@@ -21,3 +21,5 @@ gmenu2x
+ CMakeCache.txt
+ buildopts.h
+ cmake_install.cmake
++
++/CMakeFiles/
+\ No newline at end of file
+diff --git a/CMakeLists.txt b/CMakeLists.txt
+index 8e47d5b..7427cc6 100644
+--- a/CMakeLists.txt
++++ b/CMakeLists.txt
+@@ -1,6 +1,10 @@
+ cmake_minimum_required(VERSION 3.4)
+ project(gmenu2x LANGUAGES CXX VERSION 1.0)
+ 
++set(SOURCE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/../../../package/gmenu2x/480x320")
++set(DESTINATION_DIR "${CMAKE_CURRENT_BINARY_DIR}//data/skins")
++file(COPY ${SOURCE_DIR} DESTINATION ${DESTINATION_DIR})
++
+ include(GNUInstallDirs)
+ include(FindPackageHandleStandardArgs)
+ 
+-- 
+2.25.1
+

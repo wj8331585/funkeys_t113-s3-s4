@@ -1,0 +1,47 @@
+From 47089dcbe4a5bcb3110c748d33e2e07c54859549 Mon Sep 17 00:00:00 2001
+From: wj <545818496@qq.com>
+Date: Wed, 24 Apr 2024 15:08:28 +0800
+Subject: [PATCH] 480x320
+
+---
+ platform/common/menu_pico.c | 8 ++++----
+ platform/common/plat_sdl.c  | 4 ++--
+ 2 files changed, 6 insertions(+), 6 deletions(-)
+
+diff --git a/platform/common/menu_pico.c b/platform/common/menu_pico.c
+index 1df696c9..cd92e820 100644
+--- a/platform/common/menu_pico.c
++++ b/platform/common/menu_pico.c
+@@ -121,10 +121,10 @@ static int menu_w, menu_h;
+ #endif //MENU_ERROR
+ 
+ 
+-#define RES_HW_SCREEN_HORIZONTAL    240
+-#define RES_HW_SCREEN_VERTICAL      240
+-#define SCREEN_HORIZONTAL_SIZE      240
+-#define SCREEN_VERTICAL_SIZE        240
++#define RES_HW_SCREEN_HORIZONTAL    480
++#define RES_HW_SCREEN_VERTICAL      320
++#define SCREEN_HORIZONTAL_SIZE      480
++#define SCREEN_VERTICAL_SIZE        320
+ 
+ #define SCROLL_SPEED_PX             30
+ #define FPS_MENU                    50
+diff --git a/platform/common/plat_sdl.c b/platform/common/plat_sdl.c
+index 00141e52..c41fd00d 100644
+--- a/platform/common/plat_sdl.c
++++ b/platform/common/plat_sdl.c
+@@ -25,8 +25,8 @@
+ 
+ #include <pico/pico_int.h>
+ 
+-#define RES_HW_SCREEN_HORIZONTAL  240
+-#define RES_HW_SCREEN_VERTICAL    240
++#define RES_HW_SCREEN_HORIZONTAL  480
++#define RES_HW_SCREEN_VERTICAL    320
+ 
+ #define MAX(x, y) (((x) > (y)) ? (x) : (y))
+ #define MIN(x, y) (((x) < (y)) ? (x) : (y))
+-- 
+2.25.1
+

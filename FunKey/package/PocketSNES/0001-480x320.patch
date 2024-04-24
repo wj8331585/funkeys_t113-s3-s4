@@ -1,0 +1,64 @@
+From e0cc626cf1a2ed70a2f67f77eb9c244e87c15800 Mon Sep 17 00:00:00 2001
+From: wj <545818496@qq.com>
+Date: Wed, 24 Apr 2024 15:17:22 +0800
+Subject: [PATCH] 480x320
+
+---
+ menu/menu.h             | 4 ++--
+ sal/linux/include/sal.h | 8 ++++----
+ sal/linux/sal.c         | 4 ++--
+ 3 files changed, 8 insertions(+), 8 deletions(-)
+
+diff --git a/menu/menu.h b/menu/menu.h
+index 3270743..a0f347a 100644
+--- a/menu/menu.h
++++ b/menu/menu.h
+@@ -86,9 +86,9 @@ enum MENU_MESSAGE_BOX_MODE
+ //Graphic size definitions
+ #define MENU_TILE_WIDTH      64
+ #define MENU_TILE_HEIGHT     64
+-#define MENU_HEADER_WIDTH    320
++#define MENU_HEADER_WIDTH    480
+ #define MENU_HEADER_HEIGHT   48
+-#define HIGHLIGHT_BAR_WIDTH  320
++#define HIGHLIGHT_BAR_WIDTH  480
+ #define HIGHLIGHT_BAR_HEIGHT 16
+ 
+ #define INP_BUTTON_MENU_SELECT			SAL_INPUT_A
+diff --git a/sal/linux/include/sal.h b/sal/linux/include/sal.h
+index 0f6894a..cbc166d 100644
+--- a/sal/linux/include/sal.h
++++ b/sal/linux/include/sal.h
+@@ -68,10 +68,10 @@ extern "C" {
+ /*#define SAL_SCREEN_WIDTH			480
+ #define SAL_SCREEN_HEIGHT			272*/
+ 
+-#define RES_HW_SCREEN_HORIZONTAL  240
+-#define RES_HW_SCREEN_VERTICAL    240
+-#define SAL_SCREEN_WIDTH			240
+-#define SAL_SCREEN_HEIGHT			240
++#define RES_HW_SCREEN_HORIZONTAL  480
++#define RES_HW_SCREEN_VERTICAL    320
++#define SAL_SCREEN_WIDTH			480
++#define SAL_SCREEN_HEIGHT			320
+ #define SAL_MAX_PATH				512
+ #define SAL_DIR_SEP				"/"
+ #define SAL_DIR_SEP_BAD				"\\"
+diff --git a/sal/linux/sal.c b/sal/linux/sal.c
+index 4a3556b..ca5fa61 100644
+--- a/sal/linux/sal.c
++++ b/sal/linux/sal.c
+@@ -20,8 +20,8 @@
+ #define PALETTE_BUFFER_LENGTH	256*2*4
+ //#define BLACKER_BLACKS
+ 
+-#define RES_HW_SCREEN_HORIZONTAL  240
+-#define RES_HW_SCREEN_VERTICAL    240
++#define RES_HW_SCREEN_HORIZONTAL  480
++#define RES_HW_SCREEN_VERTICAL    320
+ 
+ #define MAX(x, y) (((x) > (y)) ? (x) : (y))
+ #define MIN(x, y) (((x) < (y)) ? (x) : (y))
+-- 
+2.25.1
+

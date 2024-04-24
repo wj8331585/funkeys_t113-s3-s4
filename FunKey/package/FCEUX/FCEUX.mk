@@ -33,6 +33,7 @@ FCEUX_LIBS += -lSDL -lSDL_image -lSDL_ttf -lpng  -lm -lz
 
 define FCEUX_BUILD_CMDS
 	(cd $(@D); \
+	cp -f $(@D)/../../../package/FCEUX/backdrop.png $(@D)/fceux; \
 	make \
 	CFLAGS='$(FCEUX_CFLAGS)' \
 	LDFLAGS='$(FCEUX_LDFLAGS)' \

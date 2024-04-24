@@ -1,0 +1,263 @@
+From 7649764e7ba261eb45f1f9db530e371d4be83495 Mon Sep 17 00:00:00 2001
+From: wj <545818496@qq.com>
+Date: Wed, 24 Apr 2024 10:18:43 +0800
+Subject: [PATCH] update
+
+---
+ src/drivers/dingux-sdl/config.cpp             | 11 +++++------
+ src/drivers/dingux-sdl/dingoo-video.cpp       |  5 +++--
+ src/drivers/dingux-sdl/dingoo-video.h         |  7 +++++--
+ src/drivers/dingux-sdl/gui/gui.cpp            |  2 +-
+ src/drivers/dingux-sdl/gui/video_settings.cpp |  4 ++--
+ src/drivers/sdl/config.cpp                    |  2 +-
+ src/drivers/win/texthook.cpp                  |  2 +-
+ src/drivers/win/video.cpp                     |  6 +++---
+ src/fceu.cpp                                  | 12 ++++++------
+ src/video.cpp                                 | 14 +++++++-------
+ 10 files changed, 34 insertions(+), 31 deletions(-)
+
+diff --git a/src/drivers/dingux-sdl/config.cpp b/src/drivers/dingux-sdl/config.cpp
+index bf50ff8..8b858e8 100644
+--- a/src/drivers/dingux-sdl/config.cpp
++++ b/src/drivers/dingux-sdl/config.cpp
+@@ -108,7 +108,6 @@ static void GetBaseDirectory(std::string &dir)
+ Config * InitConfig() {
+ 	std::string dir, prefix;
+ 	Config *config;
+-
+ 	GetBaseDirectory(dir);
+ 
+ 	FCEUI_SetBaseDirectory(dir.c_str());
+@@ -144,11 +143,11 @@ Config * InitConfig() {
+ 
+ 	// scanline settings
+ 	config->addOption("slstart", "SDL.ScanLineStart", 0);
+-	config->addOption("slend", "SDL.ScanLineEnd", 239);
++	config->addOption("slend", "SDL.ScanLineEnd", 319);
+ 
+ 	// video controls
+-	config->addOption('x', "xres", "SDL.XResolution", 320);
+-	config->addOption('y', "yres", "SDL.YResolution", 240);
++	config->addOption('x', "xres", "SDL.XResolution", 480);
++	config->addOption('y', "yres", "SDL.YResolution", 320);
+ 	config->addOption('f', "fullscreen", "SDL.Fullscreen", 0);
+ 	config->addOption('b', "bpp", "SDL.BitsPerPixel", 8);
+ 	config->addOption("doublebuf", "SDL.DoubleBuffering", 0);
+@@ -436,8 +435,8 @@ void UpdateEMUCore(Config *config) {
+ 
+ #if DOING_SCANLINE_CHECKS
+ 	for(int i = 0; i < 2; x++) {
+-		if(srendlinev[x]<0 || srendlinev[x]>239) srendlinev[x]=0;
+-		if(erendlinev[x]<srendlinev[x] || erendlinev[x]>239) erendlinev[x]=239;
++		if(srendlinev[x]<0 || srendlinev[x]>319) srendlinev[x]=0;
++		if(erendlinev[x]<srendlinev[x] || erendlinev[x]>319) erendlinev[x]=319;
+ 	}
+ #endif
+ 
+diff --git a/src/drivers/dingux-sdl/dingoo-video.cpp b/src/drivers/dingux-sdl/dingoo-video.cpp
+index 142852d..00ecfd0 100644
+--- a/src/drivers/dingux-sdl/dingoo-video.cpp
++++ b/src/drivers/dingux-sdl/dingoo-video.cpp
+@@ -169,7 +169,8 @@ int InitVideo(FCEUGI *gi) {
+ 		uint32 vm = 0; // 0 - 320x240, 1 - 400x240, 2 - 480x272
+ 
+ 		hw_screen = SDL_SetVideoMode(RES_HW_SCREEN_HORIZONTAL, RES_HW_SCREEN_VERTICAL, 16, SDL_HWSURFACE | DINGOO_MULTIBUF);
+-		screen = SDL_CreateRGBSurface(SDL_SWSURFACE, 320, 240, 16, 0, 0, 0, 0);
++		// screen = SDL_CreateRGBSurface(SDL_SWSURFACE, 320, 240, 16, 0, 0, 0, 0);
++		screen = SDL_CreateRGBSurface(SDL_SWSURFACE, 480, 320, 16, 0, 0, 0, 0);
+ 		s_VideoModeSet = true;
+ 	}
+ 
+@@ -338,7 +339,7 @@ void flip_NNOptimized_AllowOutOfScreen_NES(uint8_t *nes_px, SDL_Surface *dst_sur
+ 	int w1 = 256; //NWIDTH;
+ 	int h1 = s_tlines;
+ 	int w2 = new_w;
+-	int h2 = new_h;
++	int h2 = new_h + 110;
+ 	int x_ratio = (int) ((w1 << 16) / w2);
+ 	int y_ratio = (int) ((h1 << 16) / h2);
+ 	int x2, y2;
+diff --git a/src/drivers/dingux-sdl/dingoo-video.h b/src/drivers/dingux-sdl/dingoo-video.h
+index 809148f..05a6811 100644
+--- a/src/drivers/dingux-sdl/dingoo-video.h
++++ b/src/drivers/dingux-sdl/dingoo-video.h
+@@ -2,8 +2,11 @@
+ #define __DINGOO_VIDEO__
+ 
+ 
+-#define RES_HW_SCREEN_VERTICAL 		240
+-#define RES_HW_SCREEN_HORIZONTAL 	240
++// #define RES_HW_SCREEN_VERTICAL 		240
++// #define RES_HW_SCREEN_HORIZONTAL 	320
++
++#define RES_HW_SCREEN_VERTICAL 		320
++#define RES_HW_SCREEN_HORIZONTAL 	480
+ 
+ uint32 PtoV(uint16 x, uint16 y);
+ bool FCEUD_ShouldDrawInputAids();
+diff --git a/src/drivers/dingux-sdl/gui/gui.cpp b/src/drivers/dingux-sdl/gui/gui.cpp
+index b8d0994..22cdec9 100644
+--- a/src/drivers/dingux-sdl/gui/gui.cpp
++++ b/src/drivers/dingux-sdl/gui/gui.cpp
+@@ -295,7 +295,7 @@ int FCEUGUI_Init(FCEUGI *gi)
+ {
+ 
+ 	// create 565 RGB surface
+-	gui_screen = SDL_CreateRGBSurface(SDL_SWSURFACE, 320, 240, 16, 0xf800, 0x7e0, 0x1f, 0);
++	gui_screen = SDL_CreateRGBSurface(SDL_SWSURFACE, 480, 320, 16, 0xf800, 0x7e0, 0x1f, 0);
+ 	if(!gui_screen) printf("Error creating surface gui\n");
+ 
+ 	// Load bg image
+diff --git a/src/drivers/dingux-sdl/gui/video_settings.cpp b/src/drivers/dingux-sdl/gui/video_settings.cpp
+index 65021a8..76274de 100644
+--- a/src/drivers/dingux-sdl/gui/video_settings.cpp
++++ b/src/drivers/dingux-sdl/gui/video_settings.cpp
+@@ -154,7 +154,7 @@ static void slstart_update(unsigned long key)
+ 	int val;
+ 	g_config->getOption("SDL.ScanLineStart", &val);
+ 
+-	if (key == DINGOO_RIGHT) val = val < 239 ? val+1 : 239;
++	if (key == DINGOO_RIGHT) val = val < 319 ? val+1 : 319;
+ 	if (key == DINGOO_LEFT) val = val > 0 ? val-1 : 0;
+ 
+ 	g_config->setOption("SDL.ScanLineStart", val);
+@@ -166,7 +166,7 @@ static void slend_update(unsigned long key)
+ 	int val;
+ 	g_config->getOption("SDL.ScanLineEnd", &val);
+ 
+-	if (key == DINGOO_RIGHT) val = val < 239 ? val+1 : 239;
++	if (key == DINGOO_RIGHT) val = val < 319 ? val+1 : 319;
+ 	if (key == DINGOO_LEFT) val = val > 0 ? val-1 : 0;
+ 
+ 	g_config->setOption("SDL.ScanLineEnd", val);
+diff --git a/src/drivers/sdl/config.cpp b/src/drivers/sdl/config.cpp
+index eb83264..07c6be7 100644
+--- a/src/drivers/sdl/config.cpp
++++ b/src/drivers/sdl/config.cpp
+@@ -155,7 +155,7 @@ InitConfig()
+ 
+ 	// scanline settings
+ 	config->addOption("slstart", "SDL.ScanLineStart", 0);
+-	config->addOption("slend", "SDL.ScanLineEnd", 239);
++	config->addOption("slend", "SDL.ScanLineEnd", 319);
+ 
+ 	// video controls
+ 	config->addOption('f', "fullscreen", "SDL.Fullscreen", 0);
+diff --git a/src/drivers/win/texthook.cpp b/src/drivers/win/texthook.cpp
+index 934e946..f6c3948 100644
+--- a/src/drivers/win/texthook.cpp
++++ b/src/drivers/win/texthook.cpp
+@@ -967,7 +967,7 @@ BOOL CALLBACK TextHookerCallB(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM lPa
+ 						TextHookerScanline = atoi( str );
+ 						if ( !TextHookerScanline ) TextHookerScanline = 0;
+ 						if (TextHookerScanline < 0 ) TextHookerScanline = 0;
+-						if (TextHookerScanline > 239) TextHookerScanline = 239;
++						if (TextHookerScanline > 319) TextHookerScanline = 319;
+ 					}
+ 					
+ 					//how often are we going to redraw?
+diff --git a/src/drivers/win/video.cpp b/src/drivers/win/video.cpp
+index b07a92a..ad38430 100644
+--- a/src/drivers/win/video.cpp
++++ b/src/drivers/win/video.cpp
+@@ -54,7 +54,7 @@ int vmod = 0;
+ vmdef vmodes[11] =
+ {
+ 	{0,0,0,VMDF_DXBLT|VMDF_STRFS,1,1,0},	// Custom - set to current resolution at the first launch
+-	{320,240,8,0,1,1,0}, //1
++	{480,320,8,0,1,1,0}, //1
+ 	{512,384,8,0,1,1,0}, //2
+ 	{640,480,32,0,1,1,0}, //3
+ 	{640,480,32,0,1,1,0}, //4
+@@ -1336,10 +1336,10 @@ gornk:
+ 				erendlinep=GetDlgItemInt(hwndDlg,IDC_SCANLINE_LAST_PAL,0,0);
+ 
+ 
+-				if(erendlinen>239) erendlinen=239;
++				if(erendlinen>319) erendlinen=319;
+ 				if(srendlinen>erendlinen) srendlinen=erendlinen;
+ 
+-				if(erendlinep>239) erendlinep=239;
++				if(erendlinep>319) erendlinep=319;
+ 				if(srendlinep>erendlinen) srendlinep=erendlinep;
+ 
+ 				UpdateRendBounds();
+diff --git a/src/fceu.cpp b/src/fceu.cpp
+index 7307144..8bc3a54 100644
+--- a/src/fceu.cpp
++++ b/src/fceu.cpp
+@@ -157,7 +157,7 @@ void FCEU_TogglePPU(void) {
+ 		FCEU_DispMessage("Old PPU loaded", 0);
+ 		FCEUI_printf("Old PPU loaded");
+ 	}
+-	normalscanlines = (dendy ? 290 : 240)+newppu; // use flag as number!
++	normalscanlines = (dendy ? 290 : 320)+newppu; // use flag as number!
+ #if defined(WIN32) && !defined(DINGUX)
+ 	SetMainWindowText();
+ #endif
+@@ -587,8 +587,8 @@ bool FCEUI_Initialize() {
+ 	FSettings.UsrFirstSLine[0] = 0;
+ 	FSettings.UsrFirstSLine[1] = 0;
+ 	//FSettings.UsrLastSLine[0]=231;
+-	FSettings.UsrLastSLine[0] = 239;
+-	FSettings.UsrLastSLine[1] = 239;
++	FSettings.UsrLastSLine[0] = 319;
++	FSettings.UsrLastSLine[1] = 319;
+ 	FSettings.SoundVolume = 150;      //0-150 scale
+ 	FSettings.TriangleVolume = 256;   //0-256 scale (256 is max volume)
+ 	FSettings.Square1Volume = 256;    //0-256 scale (256 is max volume)
+@@ -896,7 +896,7 @@ void FCEU_ResetVidSys(void) {
+ 	if (newppu)
+ 		overclock_enabled = 0;
+ 
+-	normalscanlines = (dendy ? 290 : 240)+newppu; // use flag as number!
++	normalscanlines = (dendy ? 290 : 320)+newppu; // use flag as number!
+ 	totalscanlines = normalscanlines + (overclock_enabled ? postrenderscanlines : 0);
+ 	FCEUPPU_SetVideoSystem(w || dendy);
+ 	SetSoundVariables();
+@@ -969,7 +969,7 @@ int FCEUI_GetCurrentVidSystem(int *slstart, int *slend) {
+ void FCEUI_SetRegion(int region) {
+ 	switch (region) {
+ 		case 0: // NTSC
+-			normalscanlines = 240;
++			normalscanlines = 320;
+ 			pal_emulation = 0;
+ 			dendy = 0;
+ // until it's fixed on sdl. see issue #740
+@@ -979,7 +979,7 @@ void FCEUI_SetRegion(int region) {
+ #endif
+ 			break;
+ 		case 1: // PAL
+-			normalscanlines = 240;
++			normalscanlines = 320;
+ 			pal_emulation = 1;
+ 			dendy = 0;
+ #if defined(WIN32) && !defined(DINGUX)
+diff --git a/src/video.cpp b/src/video.cpp
+index ef27ad1..4c90184 100644
+--- a/src/video.cpp
++++ b/src/video.cpp
+@@ -809,13 +809,13 @@ static int boopcount = 0;
+ 
+ void ShowFPS(void)
+ {
+-#ifdef DINGUX
+-	extern int showfps; // in dingoo.cpp
+-	if (!showfps)
+-#else
+-	if(Show_FPS == false)
+-#endif
+-		return;
++// #ifdef DINGUX
++// 	extern int showfps; // in dingoo.cpp
++// 	if (!showfps)
++// #else
++// 	if(Show_FPS == false)
++// #endif
++// 		return;
+ 	uint64 da = FCEUD_GetTime() - boop[boopcount];
+ 	char fpsmsg[16];
+ 	int booplimit = PAL?50:60;
+-- 
+2.25.1
+

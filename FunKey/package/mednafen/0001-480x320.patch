@@ -1,0 +1,27 @@
+From fa6319ce3273318d46bdbf6f9ec12c0661480490 Mon Sep 17 00:00:00 2001
+From: wj <545818496@qq.com>
+Date: Wed, 24 Apr 2024 14:39:59 +0800
+Subject: [PATCH] 480x320
+
+---
+ src/drivers/video.h | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/src/drivers/video.h b/src/drivers/video.h
+index 6dd49a4..fc865b9 100644
+--- a/src/drivers/video.h
++++ b/src/drivers/video.h
+@@ -3,8 +3,8 @@
+ 
+ #include <SDL.h>
+ 
+-#define RES_HW_SCREEN_HORIZONTAL  240
+-#define RES_HW_SCREEN_VERTICAL    240
++#define RES_HW_SCREEN_HORIZONTAL  480
++#define RES_HW_SCREEN_VERTICAL    320
+ 
+ enum
+ {
+-- 
+2.25.1
+

@@ -1,0 +1,57 @@
+From efff2e3f110393f3d7ac29fac0945c14cee95c1c Mon Sep 17 00:00:00 2001
+From: wj <545818496@qq.com>
+Date: Wed, 24 Apr 2024 14:32:16 +0800
+Subject: [PATCH] 480x320
+
+---
+ menu.c  | 4 ++--
+ video.c | 2 +-
+ video.h | 4 ++--
+ 3 files changed, 5 insertions(+), 5 deletions(-)
+
+diff --git a/menu.c b/menu.c
+index 3774e16..9c8733f 100644
+--- a/menu.c
++++ b/menu.c
+@@ -40,8 +40,8 @@
+ #define MENU_ERROR_PRINTF(...)
+ #endif //MENU_ERROR
+ 
+-#define SCREEN_HORIZONTAL_SIZE      240
+-#define SCREEN_VERTICAL_SIZE        240
++#define SCREEN_HORIZONTAL_SIZE      480
++#define SCREEN_VERTICAL_SIZE        320
+ 
+ #define SCROLL_SPEED_PX             30
+ #define FPS_MENU                    50
+diff --git a/video.c b/video.c
+index f05c3f8..3ceb6ff 100644
+--- a/video.c
++++ b/video.c
+@@ -81,7 +81,7 @@ static u32 __attribute__((aligned(16))) display_list[32];
+ #define GBA_SCREEN_WIDTH 240
+ #define GBA_SCREEN_HEIGHT 160
+ 
+-#define RES_HW_SCREEN_HORIZONTAL  240
++#define RES_HW_SCREEN_HORIZONTAL  320
+ #define RES_HW_SCREEN_VERTICAL    240
+ 
+ #define PSP_SCREEN_WIDTH 480
+diff --git a/video.h b/video.h
+index 8230eae..4ee30cc 100644
+--- a/video.h
++++ b/video.h
+@@ -20,8 +20,8 @@
+ #ifndef VIDEO_H
+ #define VIDEO_H
+ 
+-#define RES_HW_SCREEN_HORIZONTAL  240
+-#define RES_HW_SCREEN_VERTICAL    240
++#define RES_HW_SCREEN_HORIZONTAL  480
++#define RES_HW_SCREEN_VERTICAL    320
+ 
+ void update_scanline();
+ void update_screen();
+-- 
+2.25.1
+

@@ -1,0 +1,45 @@
+From c35a71a6eff0373fa118ab083e8bf86fd3d8950f Mon Sep 17 00:00:00 2001
+From: wj <545818496@qq.com>
+Date: Wed, 24 Apr 2024 14:16:44 +0800
+Subject: [PATCH] 480x320
+
+---
+ sys.h         | 4 ++--
+ sys/sdl/sdl.c | 6 +++---
+ 2 files changed, 5 insertions(+), 5 deletions(-)
+
+diff --git a/sys.h b/sys.h
+index b74880a..c086c07 100644
+--- a/sys.h
++++ b/sys.h
+@@ -13,8 +13,8 @@
+ 
+ #define GB_SCREEN_WIDTH 160
+ #define GB_SCREEN_HEIGHT 144
+-#define RES_HW_SCREEN_HORIZONTAL  240
+-#define RES_HW_SCREEN_VERTICAL    240
++#define RES_HW_SCREEN_HORIZONTAL  480
++#define RES_HW_SCREEN_VERTICAL    320
+ #define SCREEN_HORIZONTAL_SIZE      RES_HW_SCREEN_HORIZONTAL
+ #define SCREEN_VERTICAL_SIZE        RES_HW_SCREEN_VERTICAL
+ 
+diff --git a/sys/sdl/sdl.c b/sys/sdl/sdl.c
+index fd94650..052acf4 100644
+--- a/sys/sdl/sdl.c
++++ b/sys/sdl/sdl.c
+@@ -754,9 +754,9 @@ void vid_end()
+ 	/* Blit scaled based on defined aspect ratio */
+ 	switch(aspect_ratio){
+ 		case ASPECT_RATIOS_TYPE_STRETCHED:
+-		upscale_160x144_to_240x240_bilinearish(gb_screen, hw_screen);
+-		/*flip_NNOptimized_AllowOutOfScreen(gb_screen, hw_screen,
+-	        RES_HW_SCREEN_HORIZONTAL, RES_HW_SCREEN_VERTICAL);*/
++		//upscale_160x144_to_240x240_bilinearish(gb_screen, hw_screen);
++		flip_NNOptimized_AllowOutOfScreen(gb_screen, hw_screen,
++	        RES_HW_SCREEN_HORIZONTAL, RES_HW_SCREEN_VERTICAL);
+ 		break;
+ 
+ 		case ASPECT_RATIOS_TYPE_SCALED:
+-- 
+2.25.1
+
