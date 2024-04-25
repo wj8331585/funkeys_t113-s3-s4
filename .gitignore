@@ -58,4 +58,4 @@ br.log
 /images/
 
 /FunKey/board_sdlretro
-#/FunKey/board/funkey/rootfs-overlay/usr/local/share/mnt_files.zip
+/FunKey/board/funkey/rootfs-overlay/usr/local/share/mnt_files.zip
