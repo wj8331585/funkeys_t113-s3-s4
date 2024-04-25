@@ -11,5 +11,6 @@ Atari lynx
 Neo Geo Pocket
 WonderSwan
 PS1
+DosBox
 Libretro
 Native games
