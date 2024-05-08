@@ -270,8 +270,8 @@
 	degree0					 = <0>;
 	fb0_format               = <10>;
 	fb0_buffer_num           = <2>;	
-	/*fb0_width                = <800>;*/
-	/*fb0_height               = <480>;*/  /*read from lcd*/
+	fb0_width                = <640>;
+	fb0_height               = <480>;
 	fb1_format               = <10>;
 	fb1_width                = <0>;
 	fb1_height               = <0>;
@@ -334,7 +334,7 @@
 &lcd0 {
 	lcd_used            = <1>;
 
-	lcd_driver_name     = "he0801a068";
+	lcd_driver_name     = "default_lcd";
 	lcd_backlight       = <50>;
 	lcd_if              = <4>;	//2:ttl; 3:lvds; 4:dsi
 
@@ -350,12 +350,12 @@
 	lcd_pwm_pol         = <1>;
 	lcd_pwm_max_limit   = <255>;
 
-	lcd_hbp             = <20>;	//是有效行间，指行同步信号hsync开始到有效数据间的dclk的cyccle个数，包含行同步信号区；即lcd_hbp等于实际hbp+实际
-	lcd_ht              = <682>;//DCLK的cycle个数，等于lcd_x+lcd_hspw+lcd_hbp+lcd_hfp；驱动会自动根据这个值计算lcd_hfp
-	lcd_hspw            = <2>;	//是行同步信号的宽度。即1个data cycle的时间
-	lcd_vbp             = <4>;	//场同步信号sync开始到有效数据间的行数，包括场同步信号区；即lcd_vbp等于实际vbp+实际vspw
-	lcd_vt              = <494>;//场的总行数，等于lcd_y+lcd_vspw+lcd_vbp+lcd_vfp；驱动会自动根据这个值计算lcd_vfp
-	lcd_vspw            = <2>;	//场同步信号的宽度
+	lcd_hbp             = <220>;	//是有效行间，指行同步信号hsync开始到有效数据间的dclk的cyccle个数，包含行同步信号区；即lcd_hbp等于实际hbp+实际
+	lcd_ht              = <1084>;	//DCLK的cycle个数，等于lcd_x+lcd_hspw+lcd_hbp+lcd_hfp；驱动会自动根据这个值计算lcd_hfp
+	lcd_hspw            = <4>;		//是行同步信号的宽度。即1个data cycle的时间
+	lcd_vbp             = <70>;		//场同步信号sync开始到有效数据间的行数，包括场同步信号区；即lcd_vbp等于实际vbp+实际vspw
+	lcd_vt              = <624>;	//场的总行数，等于lcd_y+lcd_vspw+lcd_vbp+lcd_vfp；驱动会自动根据这个值计算lcd_vfp
+	lcd_vspw            = <4>;		//场同步信号的宽度
 
 	lcd_dsi_lane        = <4>;
 	lcd_dsi_if          = <0>;	//mipi-DSI的类型：0是video mode（即：实时刷屏）；1是command mode（即：屏幕有个te引脚）
@@ -371,7 +371,7 @@
 	lcdgamma4iep        = <22>;
 	smart_color         = <90>;
 
-	//lcd_reset = <&pio PD 16 GPIO_ACTIVE_HIGH>;
+	lcd_gpio_0 = <&pio PE 11 GPIO_ACTIVE_HIGH>;
 	pinctrl-0 = <&dsi4lane_pins_a>;
 	pinctrl-1 = <&dsi4lane_pins_b>;
 };
