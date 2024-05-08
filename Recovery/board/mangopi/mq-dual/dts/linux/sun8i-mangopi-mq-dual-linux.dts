@@ -1223,6 +1223,53 @@ pull up or pull down(default 0), driver level(default 1), data>
 ;For lvds1: use lvds1_pins_a  and lvds1_pins_b instead
 ;For lvds0: use lvds0_pins_a  and lvds0_pins_b instead
 ;----------------------------------------------------------------------------------*/
+
+&lcd0 {
+	lcd_used            = <1>;
+
+	lcd_driver_name     = "he0801a068";
+	lcd_backlight       = <50>;
+	lcd_if              = <4>;	//2:ttl; 3:lvds; 4:dsi
+
+	lcd_x               = <640>;
+	lcd_y               = <480>;
+	lcd_width           = <640>;
+	lcd_height          = <480>;
+	lcd_dclk_freq       = <20>;
+
+	lcd_pwm_used        = <1>;
+	lcd_pwm_ch          = <7>;
+	lcd_pwm_freq        = <50000>;
+	lcd_pwm_pol         = <1>;
+	lcd_pwm_max_limit   = <255>;
+
+	lcd_hbp             = <20>;	//是有效行间，指行同步信号hsync开始到有效数据间的dclk的cyccle个数，包含行同步信号区；即lcd_hbp等于实际hbp+实际
+	lcd_ht              = <682>;//DCLK的cycle个数，等于lcd_x+lcd_hspw+lcd_hbp+lcd_hfp；驱动会自动根据这个值计算lcd_hfp
+	lcd_hspw            = <2>;	//是行同步信号的宽度。即1个data cycle的时间
+	lcd_vbp             = <4>;	//场同步信号sync开始到有效数据间的行数，包括场同步信号区；即lcd_vbp等于实际vbp+实际vspw
+	lcd_vt              = <494>;//场的总行数，等于lcd_y+lcd_vspw+lcd_vbp+lcd_vfp；驱动会自动根据这个值计算lcd_vfp
+	lcd_vspw            = <2>;	//场同步信号的宽度
+
+	lcd_dsi_lane        = <4>;
+	lcd_dsi_if          = <0>;	//mipi-DSI的类型：0是video mode（即：实时刷屏）；1是command mode（即：屏幕有个te引脚）
+	lcd_dsi_format      = <0>;	//mipi-DSI的数据格式：0是24bit RGB；1是loosely的18bit RGB；2是18bit RGB；3是16bit RGB
+	lcd_dsi_te          = <0>;	//mipi-DSI的刷屏间隔：0的刷屏间隔是lcd_ht*lcd_vt；1或2的刷屏间隔是2个te脉冲；0是自动；1是上升沿；2是下降沿
+	lcd_frm             = <0>;	//LCD的色深，0是RGB888；1是RGB666；2是RGB565
+	lcd_io_phase        = <0>;
+	lcd_gamma_en        = <0>;	//伽马参数：0是关闭；1是开启；设置1后需要对屏驱动中的lcd_gamma_tbl[256]赋值
+	lcd_bright_curve_en = <0>;
+	lcd_cmap_en         = <0>;	//色彩映射功能：0是关闭；1是开启；设置1后需要对lcd_cmap_tbl[2][3][4]进行赋值
+
+	deu_mode            = <0>;
+	lcdgamma4iep        = <22>;
+	smart_color         = <90>;
+
+	//lcd_reset = <&pio PD 16 GPIO_ACTIVE_HIGH>;
+	pinctrl-0 = <&dsi4lane_pins_a>;
+	pinctrl-1 = <&dsi4lane_pins_b>;
+};
+
+/*
 &lcd0 {
 	lcd_used            = <1>;					// 启用lcd		
 
@@ -1265,51 +1312,7 @@ pull up or pull down(default 0), driver level(default 1), data>
 	pinctrl-0 = <&rgb18_pins_a>;
 	pinctrl-1 = <&rgb18_pins_b>;	
 };
-/*
-&lcd0 {
-	lcd_used            = <1>;
-
-	lcd_driver_name     = "he0801a068";
-	lcd_backlight       = <50>;
-	lcd_if              = <4>;
-
-	lcd_x               = <800>;
-	lcd_y               = <1280>;
-	lcd_width           = <800>;
-	lcd_height          = <1280>;
-	lcd_dclk_freq       = <78>;
-
-	lcd_pwm_used        = <1>;
-	lcd_pwm_ch          = <7>;
-	lcd_pwm_freq        = <50000>;
-	lcd_pwm_pol         = <1>;
-	lcd_pwm_max_limit   = <255>;
-
-	lcd_hbp             = <149>;
-	lcd_ht              = <978>;
-	lcd_hspw            = <16>;
-	lcd_vbp             = <7>;
-	lcd_vt              = <1329>;
-	lcd_vspw            = <5>;
-
-	lcd_dsi_lane        = <4>;
-	lcd_dsi_if          = <0>;
-	lcd_dsi_format      = <0>;
-	lcd_dsi_te          = <0>;
-	lcd_frm             = <0>;
-	lcd_io_phase        = <0>;
-	lcd_gamma_en        = <0>;
-	lcd_bright_curve_en = <0>;
-	lcd_cmap_en         = <0>;
-
-	deu_mode            = <0>;
-	lcdgamma4iep        = <22>;
-	smart_color         = <90>;
-
-	lcd_gpio_0 = <&pio PG 13 GPIO_ACTIVE_HIGH>;
-	pinctrl-0 = <&dsi4lane_pins_a>;
-	pinctrl-1 = <&dsi4lane_pins_b>;
-};*/
+*/
 /*
 &lcd0 {
 	lcd_used            = <1>;
