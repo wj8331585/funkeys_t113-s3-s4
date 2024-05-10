@@ -20,7 +20,7 @@ for i in /etc/profile.d/*.sh ; do
 done
 insmod /usr/local/sbin/mypoweroff.ko
 #set defualt machine date
-date -s 2024-03-16
+date -s 2024-05-10
 ulimit -c unlimited
 #grep debugfs /proc/filesystems && mount -t debugfs none /sys/kernel/debug
 alias usbhost="cat /sys/devices/platform/soc@3000000/soc@3000000:usbc0@0/usb_host"
