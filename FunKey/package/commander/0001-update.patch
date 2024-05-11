@@ -1,0 +1,49 @@
+From 0226f765f85b22a8e3177f0d5dd846bfa8c7c552 Mon Sep 17 00:00:00 2001
+From: wj <545818496@qq.com>
+Date: Sat, 11 May 2024 18:09:53 +0800
+Subject: [PATCH] update
+
+---
+ config_def.h | 4 ++--
+ fk_menu.c    | 6 +++---
+ 2 files changed, 5 insertions(+), 5 deletions(-)
+
+diff --git a/config_def.h b/config_def.h
+index 210cd1d..45b1ed4 100644
+--- a/config_def.h
++++ b/config_def.h
+@@ -9,11 +9,11 @@
+ #endif
+ 
+ #ifndef SCREEN_WIDTH
+-#define SCREEN_WIDTH 320
++#define SCREEN_WIDTH 480
+ #endif
+ 
+ #ifndef SCREEN_HEIGHT
+-#define SCREEN_HEIGHT 240
++#define SCREEN_HEIGHT 320
+ #endif
+ 
+ #ifndef SCREEN_BPP
+diff --git a/fk_menu.c b/fk_menu.c
+index 938dc5b..d330166 100755
+--- a/fk_menu.c
++++ b/fk_menu.c
+@@ -50,10 +50,10 @@
+ #define MENU_ERROR_PRINTF(...)
+ #endif //MENU_ERROR
+ 
+-#define SCREEN_HORIZONTAL_SIZE      240 //RES_HW_SCREEN_HORIZONTAL
+-#define SCREEN_VERTICAL_SIZE        240 //RES_HW_SCREEN_VERTICAL
++#define SCREEN_HORIZONTAL_SIZE      640 //RES_HW_SCREEN_HORIZONTAL
++#define SCREEN_VERTICAL_SIZE        480 //RES_HW_SCREEN_VERTICAL
+ 
+-#define SCROLL_SPEED_PX             30
++#define SCROLL_SPEED_PX             100
+ #define FPS_MENU                    60
+ #define ARROWS_PADDING              8
+ 
+-- 
+2.25.1
+
