@@ -1,6 +1,6 @@
-From d4ce7cc5548368beba9e2a1af5e8d0f336699c9f Mon Sep 17 00:00:00 2001
+From 1f59f9ad49326eb603cffdd48ecfbc5a9aad212e Mon Sep 17 00:00:00 2001
 From: wj <545818496@qq.com>
-Date: Thu, 9 May 2024 11:23:28 +0800
+Date: Sat, 11 May 2024 16:41:37 +0800
 Subject: [PATCH] update cn
 
 ---
@@ -11,8 +11,9 @@ Subject: [PATCH] update cn
  RetroFE/Source/Graphics/Component/Text.cpp    | 149 ++--
  RetroFE/Source/Graphics/Font.cpp              | 224 ++---
  RetroFE/Source/Graphics/Font.h                |  29 +-
- RetroFE/Source/Menu/MenuMode.cpp              | 102 ++-
- 8 files changed, 683 insertions(+), 665 deletions(-)
+ RetroFE/Source/Menu/MenuMode.cpp              | 110 +--
+ RetroFE/Source/SDL.cpp                        |   8 +-
+ 9 files changed, 691 insertions(+), 673 deletions(-)
 
 diff --git a/RetroFE/Source/CMakeLists.txt b/RetroFE/Source/CMakeLists.txt
 index 32e8454..59855eb 100755
@@ -1961,10 +1962,10 @@ index cb4951f..8b64283 100755
 +    bool addGlyphBuild(unsigned int charCode, GlyphInfoBuild **build);
  };
 diff --git a/RetroFE/Source/Menu/MenuMode.cpp b/RetroFE/Source/Menu/MenuMode.cpp
-index 8cce5c7..55e1af6 100755
+index 8cce5c7..a7191ef 100755
 --- a/RetroFE/Source/Menu/MenuMode.cpp
 +++ b/RetroFE/Source/Menu/MenuMode.cpp
-@@ -23,8 +23,8 @@
+@@ -23,10 +23,10 @@
  #define MENU_ERROR_PRINTF(...)
  #endif //MENU_ERROR
  
@@ -1973,26 +1974,32 @@ index 8cce5c7..55e1af6 100755
 +#define SCREEN_HORIZONTAL_SIZE      640 //RES_HW_SCREEN_HORIZONTAL
 +#define SCREEN_VERTICAL_SIZE        480 //RES_HW_SCREEN_VERTICAL
  
- #define SCROLL_SPEED_PX             30
+-#define SCROLL_SPEED_PX             30
++#define SCROLL_SPEED_PX             100
  #define FPS_MENU                    60
+ #define ARROWS_PADDING              8
+ 
 @@ -35,12 +35,18 @@
  #define MENU_BG_SQURE_WIDTH         180
  #define MENU_BG_SQUREE_HEIGHT       140
  
 -#define MENU_FONT_NAME_TITLE        "/usr/games/menu_resources/OpenSans-Bold.ttf"
+-#define MENU_FONT_SIZE_TITLE        22
+-#define MENU_FONT_NAME_INFO         "/usr/games/menu_resources/OpenSans-Bold.ttf"
+-#define MENU_FONT_SIZE_INFO         16
+-#define MENU_FONT_NAME_SMALL_INFO   "/usr/games/menu_resources/OpenSans-Regular.ttf"
+-#define MENU_FONT_SIZE_SMALL_INFO   13
 +//#define MENU_FONT_NAME_TITLE        "/usr/games/menu_resources/OpenSans-Bold.ttf"
 +#define MENU_FONT_NAME_TITLE        "/usr/games/menu_resources/FZZhunYuan-M02S.ttf"
- #define MENU_FONT_SIZE_TITLE        22
--#define MENU_FONT_NAME_INFO         "/usr/games/menu_resources/OpenSans-Bold.ttf"
++#define MENU_FONT_SIZE_TITLE        28
 +
 +//#define MENU_FONT_NAME_INFO         "/usr/games/menu_resources/OpenSans-Bold.ttf"
 +#define MENU_FONT_NAME_INFO         "/usr/games/menu_resources/FZZhunYuan-M02S.ttf"
- #define MENU_FONT_SIZE_INFO         16
--#define MENU_FONT_NAME_SMALL_INFO   "/usr/games/menu_resources/OpenSans-Regular.ttf"
++#define MENU_FONT_SIZE_INFO         22
 +
 +//#define MENU_FONT_NAME_SMALL_INFO   "/usr/games/menu_resources/OpenSans-Regular.ttf"
 +#define MENU_FONT_NAME_SMALL_INFO    "/usr/games/menu_resources/simhei.ttf"
- #define MENU_FONT_SIZE_SMALL_INFO   13
++#define MENU_FONT_SIZE_SMALL_INFO   18
 +
  #define MENU_PNG_BG_PATH            "/usr/games/menu_resources/zone_bg.png"
  #define MENU_PNG_ARROW_TOP_PATH     "/usr/games/menu_resources/arrow_top.png"
@@ -2253,6 +2260,39 @@ index 8cce5c7..55e1af6 100755
  					text_pos.x = (virtual_hw_screen->w - MENU_ZONE_WIDTH)/2 + (MENU_ZONE_WIDTH - text_surface->w)/2;
  					text_pos.y = virtual_hw_screen->h - MENU_ZONE_HEIGHT/2 - text_surface->h/2 + 2*padding_y_from_center_menu_zone;
  					SDL_BlitSurface(text_surface, NULL, virtual_hw_screen, &text_pos);
+diff --git a/RetroFE/Source/SDL.cpp b/RetroFE/Source/SDL.cpp
+index 29febe9..43ec289 100755
+--- a/RetroFE/Source/SDL.cpp
++++ b/RetroFE/Source/SDL.cpp
+@@ -164,7 +164,7 @@ bool SDL::initialize( Configuration &config )
+ 
+         Logger::write( Logger::ZONE_INFO, "SDL", ss.str( ));
+ 
+-        window_ = SDL_SetVideoMode(windowWidth_, windowHeight_, 32, windowFlags);
++        window_ = SDL_SetVideoMode(windowWidth_, windowHeight_, 16, windowFlags);
+         if ( window_ == NULL )
+         {
+             std::string error = SDL_GetError( );
+@@ -187,7 +187,7 @@ bool SDL::initialize( Configuration &config )
+         bmask = 0x00ff0000;
+         amask = 0xff000000;
+ #endif*/
+-        window_virtual_ = SDL_CreateRGBSurface(0, windowWidth_, windowHeight_, 32, 0,0,0,0);
++        window_virtual_ = SDL_CreateRGBSurface(0, windowWidth_, windowHeight_, 16, 0,0,0,0);
+         //window_virtual_ = SDL_CreateRGBSurface(0, windowWidth_, windowHeight_, 32, rmask, gmask, bmask, amask); // colors are reversed with this !
+         if ( window_virtual_ == NULL )
+         {
+@@ -456,8 +456,8 @@ void SDL::ditherSurface32bppTo16Bpp(SDL_Surface * src_surface){
+ // Copy virtual window to HW window and Flip display
+ void SDL::renderAndFlipWindow( )
+ {
+-	//SDL_BlitSurface(window_virtual_, NULL, window_, NULL);
+-    memcpy(window_->pixels, window_virtual_->pixels, window_->h*window_->w*sizeof(uint32_t));
++	SDL_BlitSurface(window_virtual_, NULL, window_, NULL);
++    //memcpy(window_->pixels, window_virtual_->pixels, window_->h*window_->w*sizeof(uint32_t));
+ 	//SDL_Rotate_270(window_virtual_, window_);
+ 
+ 	SDL_Flip(window_);
 -- 
 2.25.1
 

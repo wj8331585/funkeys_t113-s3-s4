@@ -1,21 +1,21 @@
-From 2510395da52b6c6eed16dd040998ca51cf6c135f Mon Sep 17 00:00:00 2001
+From 5484d64e1fc79198f603b41c32bfbd623a7243b6 Mon Sep 17 00:00:00 2001
 From: wj <545818496@qq.com>
-Date: Fri, 26 Apr 2024 17:17:18 +0800
+Date: Sat, 11 May 2024 17:08:09 +0800
 Subject: [PATCH] update
 
 ---
- funkey/fk_menu.c | 115 ++++++++++++++++++++++++-----------------------
+ funkey/fk_menu.c | 123 ++++++++++++++++++++++++-----------------------
  funkey/fk_menu.h |   4 +-
  main.c           |  19 +++++++-
- scale.c          |  20 ++-------
- scale.h          |  13 +++---
- 5 files changed, 87 insertions(+), 84 deletions(-)
+ scale.c          |  20 ++------
+ scale.h          |  13 ++---
+ 5 files changed, 91 insertions(+), 88 deletions(-)
 
 diff --git a/funkey/fk_menu.c b/funkey/fk_menu.c
-index 1983dd9..a8c00a2 100644
+index 1983dd9..2b4a4ed 100644
 --- a/funkey/fk_menu.c
 +++ b/funkey/fk_menu.c
-@@ -54,8 +54,8 @@
+@@ -54,10 +54,10 @@
  #define MENU_ERROR_PRINTF(...)
  #endif //MENU_ERROR
  
@@ -24,23 +24,30 @@ index 1983dd9..a8c00a2 100644
 +#define SCREEN_HORIZONTAL_SIZE      640 //RES_HW_SCREEN_HORIZONTAL
 +#define SCREEN_VERTICAL_SIZE        480 //RES_HW_SCREEN_VERTICAL
  
- #define SCROLL_SPEED_PX             30
+-#define SCROLL_SPEED_PX             30
++#define SCROLL_SPEED_PX             100
  #define FPS_MENU                    60
-@@ -66,11 +66,11 @@
+ #define ARROWS_PADDING              8
+ 
+@@ -66,12 +66,12 @@
  #define MENU_BG_SQUARE_WIDTH        180
  #define MENU_BG_SQUARE_HEIGHT       140
  
 -#define MENU_FONT_NAME_TITLE        "/usr/games/menu_resources/OpenSans-Bold.ttf"
-+#define MENU_FONT_NAME_TITLE        "/usr/games/menu_resources/zhunyuan.ttf"
- #define MENU_FONT_SIZE_TITLE        22
+-#define MENU_FONT_SIZE_TITLE        22
 -#define MENU_FONT_NAME_INFO         "/usr/games/menu_resources/OpenSans-Bold.ttf"
-+#define MENU_FONT_NAME_INFO         "/usr/games/menu_resources/zhunyuan.ttf"
- #define MENU_FONT_SIZE_INFO         16
+-#define MENU_FONT_SIZE_INFO         16
 -#define MENU_FONT_NAME_SMALL_INFO   "/usr/games/menu_resources/OpenSans-Regular.ttf"
+-#define MENU_FONT_SIZE_SMALL_INFO   13
++#define MENU_FONT_NAME_TITLE        "/usr/games/menu_resources/zhunyuan.ttf"
++#define MENU_FONT_SIZE_TITLE        28
++#define MENU_FONT_NAME_INFO         "/usr/games/menu_resources/zhunyuan.ttf"
++#define MENU_FONT_SIZE_INFO         22
 +#define MENU_FONT_NAME_SMALL_INFO   "/usr/games/menu_resources/zhunyuan.ttf"
- #define MENU_FONT_SIZE_SMALL_INFO   13
++#define MENU_FONT_SIZE_SMALL_INFO   18
  #define MENU_PNG_BG_PATH            "/usr/games/menu_resources/zone_bg.png"
  #define MENU_PNG_ARROW_TOP_PATH     "/usr/games/menu_resources/arrow_top.png"
+ #define MENU_PNG_ARROW_BOTTOM_PATH  "/usr/games/menu_resources/arrow_bottom.png"
 @@ -281,7 +281,7 @@ static void add_menu_zone(ENUM_MENU_TYPE menu_type)
  	case MENU_TYPE_VOLUME:
  		MENU_DEBUG_PRINTF("Init MENU_TYPE_VOLUME\n");
@@ -481,7 +488,7 @@ index 5857589..842e4ae 100644
  
  						out = AVERAGE16_NOCHK(a, b); // also 3rd quintile, aabb
 diff --git a/scale.h b/scale.h
-index fe02d92..a64a9b3 100644
+index fe02d92..c2f8003 100644
 --- a/scale.h
 +++ b/scale.h
 @@ -1,11 +1,12 @@

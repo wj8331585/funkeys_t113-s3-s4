@@ -1,0 +1,50 @@
+From 86d510df4a630c507ca22e96df437c889feb96fd Mon Sep 17 00:00:00 2001
+From: wj <545818496@qq.com>
+Date: Sat, 11 May 2024 16:25:07 +0800
+Subject: [PATCH] =?UTF-8?q?=E4=BF=AE=E6=94=B9gmenu2x=E5=88=86=E8=BE=A8?=
+ =?UTF-8?q?=E7=8E=87=E4=B8=BA640x480?=
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+
+---
+ CMakeLists.txt     | 4 ++++
+ src/funkeymenu.cpp | 6 +++---
+ 2 files changed, 7 insertions(+), 3 deletions(-)
+
+diff --git a/CMakeLists.txt b/CMakeLists.txt
+index 8e47d5b..e28033f 100644
+--- a/CMakeLists.txt
++++ b/CMakeLists.txt
+@@ -1,6 +1,10 @@
+ cmake_minimum_required(VERSION 3.4)
+ project(gmenu2x LANGUAGES CXX VERSION 1.0)
+ 
++set(SOURCE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/../../../package/gmenu2x/640x480")
++set(DESTINATION_DIR "${CMAKE_CURRENT_BINARY_DIR}//data/skins")
++file(COPY ${SOURCE_DIR} DESTINATION ${DESTINATION_DIR})
++
+ include(GNUInstallDirs)
+ include(FindPackageHandleStandardArgs)
+ 
+diff --git a/src/funkeymenu.cpp b/src/funkeymenu.cpp
+index 52b1b1b..9526a0e 100644
+--- a/src/funkeymenu.cpp
++++ b/src/funkeymenu.cpp
+@@ -20,10 +20,10 @@
+ #define MENU_ERROR_PRINTF(...)
+ #endif //MENU_ERROR
+ 
+-#define SCREEN_HORIZONTAL_SIZE      240 //RES_HW_SCREEN_HORIZONTAL
+-#define SCREEN_VERTICAL_SIZE        240 //RES_HW_SCREEN_VERTICAL
++#define SCREEN_HORIZONTAL_SIZE      640 //RES_HW_SCREEN_HORIZONTAL
++#define SCREEN_VERTICAL_SIZE        480 //RES_HW_SCREEN_VERTICAL
+ 
+-#define SCROLL_SPEED_PX             30
++#define SCROLL_SPEED_PX             100
+ #define FPS_MENU                    60
+ #define ARROWS_PADDING              8
+ 
+-- 
+2.25.1
+
