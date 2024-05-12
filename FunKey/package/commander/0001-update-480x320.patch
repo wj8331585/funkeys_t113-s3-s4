@@ -1,0 +1,27 @@
+From ebaa608e36805b0e3b41dc1e704435e7dedf1b5b Mon Sep 17 00:00:00 2001
+From: wj <545818496@qq.com>
+Date: Sun, 12 May 2024 23:04:19 +0800
+Subject: [PATCH] update 480x320
+
+---
+ fk_menu.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/fk_menu.c b/fk_menu.c
+index 938dc5b..5ecdd80 100755
+--- a/fk_menu.c
++++ b/fk_menu.c
+@@ -50,8 +50,8 @@
+ #define MENU_ERROR_PRINTF(...)
+ #endif //MENU_ERROR
+ 
+-#define SCREEN_HORIZONTAL_SIZE      240 //RES_HW_SCREEN_HORIZONTAL
+-#define SCREEN_VERTICAL_SIZE        240 //RES_HW_SCREEN_VERTICAL
++#define SCREEN_HORIZONTAL_SIZE      480 //RES_HW_SCREEN_HORIZONTAL
++#define SCREEN_VERTICAL_SIZE        320 //RES_HW_SCREEN_VERTICAL
+ 
+ #define SCROLL_SPEED_PX             30
+ #define FPS_MENU                    60
+-- 
+2.25.1
+
