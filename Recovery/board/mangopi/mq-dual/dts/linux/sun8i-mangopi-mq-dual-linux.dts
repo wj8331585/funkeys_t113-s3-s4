@@ -1259,7 +1259,7 @@ pull up or pull down(default 0), driver level(default 1), data>
 	lcd_hv_clk_phase    = <0>;
 	lcd_hv_sync_polarity= <0>;
 	//lcd_dsi_format      = <0>;		//mipi-DSI的数据格式：0是24bit RGB；1是loosely的18bit RGB；2是18bit RGB；3是16bit RGB
-	//lcd_dsi_te          = <0>;		//mipi-DSI的刷屏间隔：0的刷屏间隔是lcd_ht*lcd_vt；1或2的刷屏间隔是2个te脉冲；0是自动；1是上升沿；2是下降沿
+	lcd_dsi_te          = <1>;		//mipi-DSI的刷屏间隔：0的刷屏间隔是lcd_ht*lcd_vt；1或2的刷屏间隔是2个te脉冲；0是自动；1是上升沿；2是下降沿
 	lcd_io_phase        = <0x0000>;
 	lcd_gamma_en        = <0>;		//伽马参数：0是关闭；1是开启；设置1后需要对屏驱动中的lcd_gamma_tbl[256]赋值
 	lcd_bright_curve_en = <0>;
@@ -1274,6 +1274,8 @@ pull up or pull down(default 0), driver level(default 1), data>
 	smart_color         = <90>;
 
 	lcd_gpio_0 = <&pio PE 11 GPIO_ACTIVE_HIGH>;
+	lcd_vsync = <&pio PD 21 2 0 3 0>;
+	//lcd_vsync  = port:PD21<2><0><3><default>
 	pinctrl-0 = <&dsi4lane_pins_a>;
 	pinctrl-1 = <&dsi4lane_pins_b>;
 };

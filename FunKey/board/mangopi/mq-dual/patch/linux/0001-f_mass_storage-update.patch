@@ -1,0 +1,22 @@
+From 960baab4aa3a3e2cf3c0945e7af070c237f54944 Mon Sep 17 00:00:00 2001
+From: wj <545818496@qq.com>
+Date: Mon, 27 May 2024 09:53:45 +0800
+Subject: [PATCH] f_mass_storage update
+
+---
+ drivers/usb/gadget/function/f_mass_storage.c | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/drivers/usb/gadget/function/f_mass_storage.c b/drivers/usb/gadget/function/f_mass_storage.c
+index 7c96c4665..9504b4cb6 100644
+--- a/drivers/usb/gadget/function/f_mass_storage.c
++++ b/drivers/usb/gadget/function/f_mass_storage.c
+@@ -3474,3 +3474,4 @@ void fsg_config_from_params(struct fsg_config *cfg,
+ 	cfg->fsg_num_buffers = fsg_num_buffers;
+ }
+ EXPORT_SYMBOL_GPL(fsg_config_from_params);
++MODULE_IMPORT_NS(VFS_internal_I_am_really_a_filesystem_and_am_NOT_a_driver);
+\ No newline at end of file
+-- 
+2.25.1
+

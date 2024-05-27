@@ -1,0 +1,40 @@
+From 6b96ddaaab50d660ebc5111d0bae2e1fa0d81c09 Mon Sep 17 00:00:00 2001
+From: wj <545818496@qq.com>
+Date: Mon, 27 May 2024 09:52:23 +0800
+Subject: [PATCH] dev_fb update
+
+---
+ drivers/video/fbdev/sunxi/disp2/disp/dev_fb.c | 12 ++++++------
+ 1 file changed, 6 insertions(+), 6 deletions(-)
+
+diff --git a/drivers/video/fbdev/sunxi/disp2/disp/dev_fb.c b/drivers/video/fbdev/sunxi/disp2/disp/dev_fb.c
+index 132670788..9c1458377 100644
+--- a/drivers/video/fbdev/sunxi/disp2/disp/dev_fb.c
++++ b/drivers/video/fbdev/sunxi/disp2/disp/dev_fb.c
+@@ -500,17 +500,17 @@ static s32 var_to_disp_fb(struct disp_fb_info *fb,
+ 				   && var->transp.offset == 0) {
+ 				fb->format = DISP_FORMAT_BGRA_5551;
+ 			} else {
+-				__wrn
+-				    ("invalid fmt,off<a:%d,r:%d,g:%d,b:%d>\n",
+-				     var->transp.offset, var->red.offset,
+-				     var->green.offset, var->blue.offset);
++				// __wrn
++				//     ("invalid fmt,off<a:%d,r:%d,g:%d,b:%d>\n",
++				//      var->transp.offset, var->red.offset,
++				//      var->green.offset, var->blue.offset);
+ 			}
+ 
+ 			break;
+ 
+ 		default:
+-			__wrn("invalid bits_per_pixel :%d\n",
+-			      var->bits_per_pixel);
++			// __wrn("invalid bits_per_pixel :%d\n",
++			//       var->bits_per_pixel);
+ 			return -EINVAL;
+ 		}
+ 	}
+-- 
+2.25.1
+
